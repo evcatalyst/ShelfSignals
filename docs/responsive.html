@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ShelfSignals – Responsive View</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --bg: #f7f7f7;
+      --primary: #222;
+      --accent: #1f77b4;
+      --muted: #888;
+      --border: #ddd;
+      --chip-bg: #e0e7f5;
+      --card-bg: #fff;
+      --card-hover: #fafafa;
+    }
+
+    * { 
+      box-sizing: border-box; 
+    }
+
+    /* Reduced motion support */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* High contrast mode support */
+    @media (prefers-contrast: high) {
+      :root {
+        --border: #000;
+        --muted: #333;
+      }
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--primary);
+      line-height: 1.5;
+    }
+
+    /* Header - responsive */
+    header {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--card-bg);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    header .header-content {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.1rem;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    @media (min-width: 768px) {
+      header {
+        padding: 1rem 1.5rem;
+      }
+      
+      header h1 {
+        font-size: 1.2rem;
+      }
+    }
+
+    header p {
+      margin: 0.2rem 0 0;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    /* Main layout - mobile-first responsive grid */
+    main {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    /* Single column on mobile */
+    @media (max-width: 767px) {
+      main {
+        padding: 0.75rem;
+      }
+    }
+
+    /* Two column on tablet */
+    @media (min-width: 768px) and (max-width: 1023px) {
+      main {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        padding: 1rem;
+      }
+      
+      .controls-panel {
+        grid-column: 1 / -1;
+      }
+    }
+
+    /* Three column on desktop */
+    @media (min-width: 1024px) {
+      main {
+        display: grid;
+        grid-template-columns: 280px 1fr 320px;
+        gap: 1.25rem;
+        padding: 1.25rem 1.5rem;
+      }
+    }
+
+    /* Wider layout for large screens */
+    @media (min-width: 1440px) {
+      main {
+        grid-template-columns: 300px 1fr 360px;
+        gap: 1.5rem;
+      }
+    }
+
+    /* Panel styles */
+    .panel {
+      background: var(--card-bg);
+      border-radius: 0.5rem;
+      border: 1px solid var(--border);
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      .panel {
+        margin-bottom: 0;
+      }
+    }
+
+    .panel h2 {
+      margin: 0 0 0.75rem;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    /* Controls panel */
+    .filter-group {
+      margin-bottom: 1rem;
+    }
+
+    .filter-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .filter-group label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      margin-bottom: 0.4rem;
+      cursor: pointer;
+      /* Touch-friendly tap target */
+      min-height: 44px;
+      padding: 0.25rem 0;
+    }
+
+    @media (max-width: 767px) {
+      .filter-group label {
+        font-size: 0.95rem;
+        min-height: 48px;
+      }
+    }
+
+    .filter-group input[type="checkbox"] {
+      width: 1.25rem;
+      height: 1.25rem;
+      cursor: pointer;
+      accent-color: var(--accent);
+    }
+
+    .filter-group input[type="text"] {
+      width: 100%;
+      padding: 0.6rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 0.35rem;
+      font-size: 1rem;
+      /* Touch-friendly */
+      min-height: 44px;
+    }
+
+    @media (max-width: 767px) {
+      .filter-group input[type="text"] {
+        min-height: 48px;
+        font-size: 16px; /* Prevent zoom on iOS */
+      }
+    }
+
+    .filter-group input[type="text"]:focus {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+      border-color: var(--accent);
+    }
+
+    /* Legend */
+    .legend {
+      display: grid;
+      gap: 0.5rem;
+    }
+
+    @media (min-width: 480px) {
+      .legend {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      }
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+    }
+
+    .legend-symbol {
+      width: 1.25rem;
+      height: 1.25rem;
+      border: 2px solid var(--accent);
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    /* Shelf view - responsive grid */
+    .shelf-grid {
+      display: grid;
+      gap: 0.75rem;
+      grid-template-columns: 1fr;
+    }
+
+    @media (min-width: 480px) {
+      .shelf-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      }
+    }
+
+    @media (min-width: 768px) {
+      .shelf-grid {
+        gap: 1rem;
+      }
+    }
+
+    .shelf-card {
+      border: 1px solid var(--border);
+      border-radius: 0.45rem;
+      padding: 0.75rem;
+      background: var(--card-bg);
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      /* Touch-friendly */
+      min-height: 44px;
+    }
+
+    .shelf-card:hover,
+    .shelf-card:focus {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      border-color: var(--accent);
+    }
+
+    .shelf-card:focus {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .shelf-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.5rem;
+      gap: 0.5rem;
+    }
+
+    .shelf-label {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .shelf-count {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    /* Book spines - responsive sizing */
+    .spines {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      align-items: flex-end;
+      min-height: 60px;
+    }
+
+    .spine {
+      width: 10px;
+      height: 50px;
+      border-radius: 2px;
+      border: 1px solid var(--border);
+      background: var(--accent);
+      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+      position: relative;
+    }
+
+    /* Larger spines on mobile for touch */
+    @media (max-width: 767px) {
+      .spine {
+        width: 12px;
+        height: 55px;
+      }
+      
+      .spines {
+        gap: 5px;
+      }
+    }
+
+    .spine:hover,
+    .spine:focus {
+      transform: translateY(-3px);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+    }
+
+    .spine:focus {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .spine.selected {
+      border-color: #000;
+      border-width: 2px;
+      transform: translateY(-4px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    /* Detail panel */
+    .detail-panel {
+      max-height: calc(100vh - 180px);
+      overflow-y: auto;
+    }
+
+    @media (max-width: 1023px) {
+      .detail-panel {
+        max-height: none;
+      }
+    }
+
+    .detail-section {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .detail-section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .detail-title {
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+      line-height: 1.4;
+    }
+
+    .detail-meta {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .signal-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.5rem;
+    }
+
+    .signal-badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      background: var(--chip-bg);
+      font-size: 0.8rem;
+      border: 1px solid var(--border);
+    }
+
+    /* Buttons - touch-friendly */
+    .btn {
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      border-radius: 0.35rem;
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      /* Touch-friendly */
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      color: var(--primary);
+    }
+
+    @media (max-width: 767px) {
+      .btn {
+        min-height: 48px;
+        padding: 0.6rem 1.2rem;
+      }
+    }
+
+    .btn:hover,
+    .btn:focus {
+      border-color: var(--accent);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .btn:focus {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .btn-primary:hover {
+      background: #1666a3;
+      border-color: #1666a3;
+    }
+
+    /* Loading state */
+    .loading {
+      position: fixed;
+      inset: 0;
+      background: rgba(255,255,255,0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 1rem;
+      z-index: 200;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--muted);
+    }
+
+    .empty-state h3 {
+      margin: 0 0 0.5rem;
+      font-size: 1.1rem;
+    }
+
+    /* View toggle */
+    .view-toggle {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.25rem;
+      background: var(--bg);
+      border-radius: 0.5rem;
+      border: 1px solid var(--border);
+    }
+
+    .view-toggle button {
+      padding: 0.4rem 0.8rem;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      border-radius: 0.35rem;
+      font-size: 0.85rem;
+      transition: all 0.15s ease;
+      min-height: 36px;
+    }
+
+    .view-toggle button.active {
+      background: var(--card-bg);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .view-toggle button:hover:not(.active) {
+      background: rgba(255,255,255,0.5);
+    }
+
+    /* Size legend - NEW for book size explanation */
+    .size-legend {
+      background: var(--card-hover);
+      border-radius: 0.4rem;
+      padding: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .size-legend h3 {
+      margin: 0 0 0.5rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .size-examples {
+      display: flex;
+      align-items: flex-end;
+      gap: 1rem;
+      padding: 0.5rem 0;
+    }
+
+    .size-example {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .size-example-spine {
+      background: var(--accent);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      width: 10px;
+    }
+
+    .size-example-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    /* Help tooltip */
+    .help-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.25rem;
+      height: 1.25rem;
+      border-radius: 50%;
+      background: var(--muted);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: bold;
+      cursor: help;
+      position: relative;
+    }
+
+    .help-icon:hover::after,
+    .help-icon:focus::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 0.5rem;
+      background: #333;
+      color: #fff;
+      border-radius: 0.35rem;
+      font-size: 0.8rem;
+      font-weight: normal;
+      white-space: nowrap;
+      z-index: 10;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Accessibility - Skip link */
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--accent);
+      color: #fff;
+      padding: 0.5rem 1rem;
+      text-decoration: none;
+      z-index: 100;
+    }
+
+    .skip-link:focus {
+      top: 0;
+    }
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  
+  <div id="loadingOverlay" class="loading">
+    <div class="spinner"></div>
+    <div>Loading Sekula Library…</div>
+  </div>
+
+  <header role="banner">
+    <div class="header-content">
+      <div>
+        <h1>ShelfSignals</h1>
+        <p>Allan Sekula Library – Responsive View</p>
+      </div>
+      <div class="header-actions">
+        <div class="view-toggle" role="group" aria-label="View selection">
+          <button type="button" aria-label="Switch to standard view">
+            <a href="index.html" style="text-decoration:none;color:inherit;">Standard</a>
+          </button>
+          <button type="button" class="active" aria-pressed="true" aria-label="Currently in responsive view">
+            Responsive
+          </button>
+          <button type="button" aria-label="Switch to preview view">
+            <a href="preview/index.html" style="text-decoration:none;color:inherit;">Preview</a>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="controls-panel panel" aria-label="Filter controls">
+      <h2>Filters</h2>
+      
+      <div class="filter-group">
+        <label>
+          <input type="checkbox" value="all" checked aria-label="Select all signals">
+          <span>All Signals</span>
+        </label>
+      </div>
+
+      <div id="signalFilters" class="filter-group"></div>
+
+      <div class="filter-group">
+        <label for="searchBox" style="font-weight:600;display:block;margin-bottom:0.5rem;">
+          Search
+        </label>
+        <input 
+          id="searchBox" 
+          type="text" 
+          placeholder="Search titles, subjects..." 
+          aria-label="Search library items"
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="filter-group">
+        <label>
+          <input 
+            id="toggleClassColors" 
+            type="checkbox" 
+            aria-label="Color spines by Library of Congress classification"
+          >
+          <span>Color by LC Class</span>
+        </label>
+      </div>
+
+      <div class="size-legend">
+        <h3>
+          Book Sizes 
+          <span class="help-icon" data-tooltip="Spine height shows number of thematic signals" tabindex="0" role="tooltip">?</span>
+        </h3>
+        <p style="font-size:0.85rem;margin:0 0 0.5rem;color:var(--muted);">
+          Spine height represents the number of thematic signals (themes) found in each item's metadata.
+        </p>
+        <div class="size-examples">
+          <div class="size-example">
+            <div class="size-example-spine" style="height:40px;" role="img" aria-label="Extra small book with no signals"></div>
+            <span class="size-example-label">None<br>(40px)</span>
+          </div>
+          <div class="size-example">
+            <div class="size-example-spine" style="height:56px;" role="img" aria-label="Small book with 1-2 signals"></div>
+            <span class="size-example-label">1-2<br>(56px)</span>
+          </div>
+          <div class="size-example">
+            <div class="size-example-spine" style="height:72px;" role="img" aria-label="Medium book with 3-4 signals"></div>
+            <span class="size-example-label">3-4<br>(72px)</span>
+          </div>
+          <div class="size-example">
+            <div class="size-example-spine" style="height:88px;" role="img" aria-label="Large book with 5 or more signals"></div>
+            <span class="size-example-label">5+<br>(88px)</span>
+          </div>
+        </div>
+      </div>
+
+      <h2 style="margin-top:1.5rem;">Legend</h2>
+      <div id="signalLegend" class="legend"></div>
+    </section>
+
+    <section class="shelf-panel panel" aria-label="Library collection">
+      <h2>Collection</h2>
+      <div id="shelfSummary" style="font-size:0.85rem;color:var(--muted);margin-bottom:1rem;"></div>
+      <div id="shelfGrid" class="shelf-grid"></div>
+      <div id="emptyState" class="empty-state" style="display:none;">
+        <h3>No items found</h3>
+        <p>Try adjusting your filters or search query.</p>
+      </div>
+    </section>
+
+    <section class="detail-panel panel" aria-label="Item details">
+      <h2>Details</h2>
+      <div id="detailIntro" style="font-size:0.85rem;color:var(--muted);">
+        Select an item to view details.
+      </div>
+      <div id="detailBody"></div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { SIGNAL_ORDER, SIGNAL_LABELS, deriveSignals } from './js/signals.js';
+    import { parseLcCallNumber } from './js/lc.js';
+    import { getSpineColor, getActivePalette } from './js/colors.js';
+    import { buildCatalogUrl, buildExternalLinks } from './js/catalog.js';
+    import { searchState } from './js/search.js';
+    import { normalizeYear } from './js/year.js';
+
+    // State
+    let inventory = [];
+    let enrichedInventory = [];
+    let selectedItem = null;
+    const activeSignals = new Set(SIGNAL_ORDER);
+    let colorByClass = false;
+
+    // Initialize signal filters
+    function initSignalFilters() {
+      const container = document.getElementById('signalFilters');
+      container.innerHTML = '';
+      
+      for (const signal of SIGNAL_ORDER) {
+        const label = document.createElement('label');
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.value = signal;
+        checkbox.checked = true;
+        checkbox.setAttribute('aria-label', `Filter by ${SIGNAL_LABELS[signal]}`);
+        
+        checkbox.addEventListener('change', () => {
+          if (checkbox.checked) {
+            activeSignals.add(signal);
+          } else {
+            activeSignals.delete(signal);
+          }
+          renderShelfView();
+        });
+        
+        label.appendChild(checkbox);
+        label.appendChild(document.createTextNode(` ${SIGNAL_LABELS[signal]}`));
+        container.appendChild(label);
+      }
+    }
+
+    // Initialize signal legend
+    function initSignalLegend() {
+      const container = document.getElementById('signalLegend');
+      container.innerHTML = '';
+      
+      const styles = {
+        image: 'border-style:solid;',
+        labor: 'border-style:dashed;',
+        capital: 'border-width:3px;',
+        sea: 'border-radius:0;',
+        cities: 'border-style:dotted;',
+        war: 'border-style:double;',
+        borders: 'border-color:#666;',
+        archives: 'border-color:#888;',
+        art: 'border-color:#444;',
+        theory: 'opacity:0.7;'
+      };
+      
+      for (const signal of SIGNAL_ORDER) {
+        const item = document.createElement('div');
+        item.className = 'legend-item';
+        
+        const symbol = document.createElement('span');
+        symbol.className = 'legend-symbol';
+        symbol.setAttribute('style', styles[signal] || '');
+        symbol.setAttribute('aria-hidden', 'true');
+        
+        item.appendChild(symbol);
+        item.appendChild(document.createTextNode(SIGNAL_LABELS[signal]));
+        container.appendChild(item);
+      }
+    }
+
+    // Enrich inventory
+    function enrichInventory(rawData) {
+      return rawData.map(item => {
+        const { lcClass, lcNumber, lcKey } = parseLcCallNumber(item.call_number);
+        const signals = deriveSignals(item.subjects, item.sekula_notes);
+        const yearPrimary = normalizeYear(item.year);
+        const catalogLink = buildCatalogUrl(item);
+        
+        return {
+          ...item,
+          lcClass,
+          lcNumber,
+          lcKey,
+          signals,
+          yearPrimary,
+          catalogLink
+        };
+      });
+    }
+
+    // Get filtered items
+    function getFilteredItems() {
+      return enrichedInventory.filter(item => {
+        if (activeSignals.size > 0 && activeSignals.size < SIGNAL_ORDER.length) {
+          const hasActiveSignal = item.signals.some(s => activeSignals.has(s));
+          if (!hasActiveSignal && item.signals.length > 0) {
+            return false;
+          }
+        }
+        
+        const searchResult = searchState.computeMatch(item);
+        if (!searchResult.matches) {
+          return false;
+        }
+        
+        return true;
+      });
+    }
+
+    // Group items by LC class
+    function groupItems(items) {
+      const groups = new Map();
+      
+      for (const item of items) {
+        const groupKey = item.lcClass || 'Other';
+        if (!groups.has(groupKey)) {
+          groups.set(groupKey, []);
+        }
+        groups.get(groupKey).push(item);
+      }
+      
+      return Array.from(groups.entries())
+        .sort((a, b) => {
+          if (a[0] === 'Other') return 1;
+          if (b[0] === 'Other') return -1;
+          return a[0].localeCompare(b[0]);
+        })
+        .map(([key, items]) => ({ key, items }));
+    }
+
+    // Calculate spine height based on signal count
+    function getSpineHeight(signalCount) {
+      // Base height + 8px per signal
+      const baseHeight = 40;
+      const heightPerSignal = 8;
+      return Math.min(baseHeight + (signalCount * heightPerSignal), 100);
+    }
+
+    // Render shelf view
+    function renderShelfView() {
+      const container = document.getElementById('shelfGrid');
+      const summary = document.getElementById('shelfSummary');
+      const emptyState = document.getElementById('emptyState');
+      
+      container.innerHTML = '';
+      
+      const filtered = getFilteredItems();
+      const total = enrichedInventory.length;
+      
+      // Update summary
+      if (filtered.length === 0) {
+        container.style.display = 'none';
+        emptyState.style.display = 'block';
+        summary.textContent = `No items match current filters (${total} total)`;
+        return;
+      } else {
+        container.style.display = 'grid';
+        emptyState.style.display = 'none';
+        summary.textContent = `Showing ${filtered.length} of ${total} items`;
+      }
+      
+      const groups = groupItems(filtered);
+      
+      for (const group of groups) {
+        const card = document.createElement('div');
+        card.className = 'shelf-card';
+        card.setAttribute('role', 'region');
+        card.setAttribute('aria-label', `LC Class ${group.key} shelf with ${group.items.length} items`);
+        card.setAttribute('tabindex', '0');
+        
+        const header = document.createElement('div');
+        header.className = 'shelf-card-header';
+        
+        const label = document.createElement('div');
+        label.className = 'shelf-label';
+        label.textContent = `LC ${group.key}`;
+        
+        const count = document.createElement('div');
+        count.className = 'shelf-count';
+        count.textContent = `${group.items.length} items`;
+        
+        header.appendChild(label);
+        header.appendChild(count);
+        card.appendChild(header);
+        
+        const spines = document.createElement('div');
+        spines.className = 'spines';
+        spines.setAttribute('role', 'list');
+        spines.setAttribute('aria-label', `Books in ${group.key}`);
+        
+        for (const item of group.items.slice(0, 50)) { // Limit for performance
+          const spine = document.createElement('div');
+          spine.className = 'spine';
+          spine.setAttribute('role', 'button');
+          spine.setAttribute('tabindex', '0');
+          spine.setAttribute('aria-label', `${item.title || 'Untitled'} - ${item.signals.length} signals`);
+          
+          // Set height based on signal count with ARIA label
+          const height = getSpineHeight(item.signals.length);
+          spine.style.height = `${height}px`;
+          spine.setAttribute('data-signal-count', item.signals.length);
+          
+          // Set color
+          if (colorByClass && item.lcClass) {
+            spine.style.background = getSpineColor('class', { 
+              lcClass: item.lcClass, 
+              paletteKey: getActivePalette() 
+            });
+          } else {
+            spine.style.background = '#1f77b4';
+          }
+          
+          // Selection
+          if (selectedItem && selectedItem.id === item.id) {
+            spine.classList.add('selected');
+          }
+          
+          // Click handler
+          const selectItem = () => {
+            selectedItem = item;
+            renderShelfView();
+            renderDetailPanel();
+            // Scroll detail into view on mobile
+            if (window.innerWidth < 1024) {
+              document.querySelector('.detail-panel').scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+              });
+            }
+          };
+          
+          spine.addEventListener('click', selectItem);
+          spine.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              selectItem();
+            }
+          });
+          
+          spines.appendChild(spine);
+        }
+        
+        card.appendChild(spines);
+        container.appendChild(card);
+      }
+    }
+
+    // Render detail panel
+    function renderDetailPanel() {
+      const intro = document.getElementById('detailIntro');
+      const body = document.getElementById('detailBody');
+      
+      if (!selectedItem) {
+        intro.style.display = 'block';
+        body.innerHTML = '';
+        return;
+      }
+      
+      intro.style.display = 'none';
+      body.innerHTML = '';
+      
+      // Title section
+      const titleSection = document.createElement('div');
+      titleSection.className = 'detail-section';
+      
+      const title = document.createElement('div');
+      title.className = 'detail-title';
+      title.textContent = selectedItem.title || 'Untitled';
+      titleSection.appendChild(title);
+      
+      const meta = document.createElement('div');
+      meta.className = 'detail-meta';
+      const metaParts = [];
+      if (selectedItem.authors && selectedItem.authors.length > 0) {
+        metaParts.push(`By: ${selectedItem.authors.join(', ')}`);
+      }
+      if (selectedItem.yearPrimary) {
+        metaParts.push(`Year: ${selectedItem.yearPrimary}`);
+      }
+      if (selectedItem.call_number) {
+        metaParts.push(`Call Number: ${selectedItem.call_number}`);
+      }
+      meta.innerHTML = metaParts.join('<br>');
+      titleSection.appendChild(meta);
+      
+      body.appendChild(titleSection);
+      
+      // Signals section
+      if (selectedItem.signals.length > 0) {
+        const signalsSection = document.createElement('div');
+        signalsSection.className = 'detail-section';
+        
+        const heading = document.createElement('h3');
+        heading.style.margin = '0 0 0.5rem';
+        heading.style.fontSize = '0.9rem';
+        heading.style.fontWeight = '600';
+        heading.textContent = `Signals (${selectedItem.signals.length})`;
+        signalsSection.appendChild(heading);
+        
+        const badges = document.createElement('div');
+        badges.className = 'signal-badges';
+        for (const signal of selectedItem.signals) {
+          const badge = document.createElement('span');
+          badge.className = 'signal-badge';
+          badge.textContent = SIGNAL_LABELS[signal];
+          badge.setAttribute('role', 'note');
+          badges.appendChild(badge);
+        }
+        signalsSection.appendChild(badges);
+        
+        body.appendChild(signalsSection);
+      }
+      
+      // Subjects section
+      if (selectedItem.subjects && selectedItem.subjects.length > 0) {
+        const subjectsSection = document.createElement('div');
+        subjectsSection.className = 'detail-section';
+        
+        const heading = document.createElement('h3');
+        heading.style.margin = '0 0 0.5rem';
+        heading.style.fontSize = '0.9rem';
+        heading.style.fontWeight = '600';
+        heading.textContent = 'Subjects';
+        subjectsSection.appendChild(heading);
+        
+        const list = document.createElement('div');
+        list.className = 'detail-meta';
+        list.textContent = selectedItem.subjects.slice(0, 5).join('; ');
+        subjectsSection.appendChild(list);
+        
+        body.appendChild(subjectsSection);
+      }
+      
+      // Links section
+      const links = buildExternalLinks(selectedItem);
+      if (links.length > 0) {
+        const linksSection = document.createElement('div');
+        linksSection.className = 'detail-section';
+        
+        const heading = document.createElement('h3');
+        heading.style.margin = '0 0 0.5rem';
+        heading.style.fontSize = '0.9rem';
+        heading.style.fontWeight = '600';
+        heading.textContent = 'Links';
+        linksSection.appendChild(heading);
+        
+        const linksContainer = document.createElement('div');
+        linksContainer.style.display = 'flex';
+        linksContainer.style.flexDirection = 'column';
+        linksContainer.style.gap = '0.5rem';
+        
+        for (const link of links) {
+          const a = document.createElement('a');
+          a.href = link.href;
+          a.className = 'btn';
+          a.target = '_blank';
+          a.rel = 'noopener noreferrer';
+          a.textContent = link.label;
+          linksContainer.appendChild(a);
+        }
+        
+        linksSection.appendChild(linksContainer);
+        body.appendChild(linksSection);
+      }
+    }
+
+    // Initialize event handlers
+    function initEventHandlers() {
+      const searchBox = document.getElementById('searchBox');
+      searchBox.addEventListener('input', () => {
+        searchState.setQuery(searchBox.value);
+      });
+      
+      searchState.addListener(() => {
+        renderShelfView();
+      });
+      
+      const toggleClassColors = document.getElementById('toggleClassColors');
+      toggleClassColors.addEventListener('change', () => {
+        colorByClass = toggleClassColors.checked;
+        renderShelfView();
+      });
+    }
+
+    // Load and initialize
+    async function init() {
+      const loading = document.getElementById('loadingOverlay');
+      loading.style.display = 'flex';
+      
+      try {
+        const response = await fetch('data/sekula_inventory.json');
+        if (!response.ok) throw new Error('Failed to load data');
+        
+        const data = await response.json();
+        inventory = Array.isArray(data) ? data : (data.items || []);
+        inventory = inventory.filter(item => 
+          (item.collection || '').includes('Allan Sekula Library')
+        );
+        
+        enrichedInventory = enrichInventory(inventory);
+        
+        initSignalFilters();
+        initSignalLegend();
+        initEventHandlers();
+        renderShelfView();
+        
+        loading.style.display = 'none';
+      } catch (err) {
+        console.error('Failed to load data:', err);
+        loading.innerHTML = '<div style="color:red;">Failed to load data. Please check console for details.</div>';
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>

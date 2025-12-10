@@ -680,9 +680,15 @@
 </head>
 <body>
   <header>
-    <h1>Shelfsignals · Allan Sekula Library</h1>
-    <p>Prototype overlay generated from catalog data – for internal discussion only.</p>
-    <button id="openConfig" class="icon-button" title="Color settings">⚙️</button>
+    <div>
+      <h1>Shelfsignals · Allan Sekula Library</h1>
+      <p>Prototype overlay generated from catalog data – for internal discussion only.</p>
+    </div>
+    <div style="display:flex;gap:0.5rem;align-items:center;">
+      <a href="responsive.html" class="icon-button" title="Switch to responsive view" style="text-decoration:none;">📱</a>
+      <a href="preview/index.html" class="icon-button" title="Preview environment" style="text-decoration:none;">🔬</a>
+      <button id="openConfig" class="icon-button" title="Color settings">⚙️</button>
+    </div>
   </header>
   <div id="loadingOverlay" class="loading-overlay">
     <div class="spinner"></div>
