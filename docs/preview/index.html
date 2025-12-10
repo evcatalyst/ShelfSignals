@@ -461,6 +461,8 @@
       <p>Sekula Library – JSON-based prototype</p>
     </div>
     <div class="header-controls">
+      <a href="../index.html" class="link-button" title="Go to production view">Production</a>
+      <a href="../responsive.html" class="link-button" title="Go to responsive view">Responsive</a>
       <button id="openConfig" class="link-button">Color Settings</button>
     </div>
   </header>
@@ -515,6 +517,7 @@
     import { getSpineColor, getActivePalette, setActivePalette, getPalettes } from '../js/colors.js';
     import { searchState } from '../js/search.js';
     import { normalizeYear } from '../js/year.js';
+    import { buildCatalogUrl, buildExternalLinks } from '../js/catalog.js';
 
     // State
     let inventory = [];
@@ -600,10 +603,8 @@
         // Normalize year
         const yearPrimary = normalizeYear(item.year);
         
-        // Build catalog link
-        const catalogLink = item.alma_mms ? 
-          `https://clark.primo.exlibrisgroup.com/permalink/01CLARKART_INST/1gqonkq/${item.alma_mms}` : 
-          null;
+        // Build catalog link using centralized utility
+        const catalogLink = buildCatalogUrl(item);
         
         return {
           ...item,

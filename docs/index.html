@@ -680,9 +680,15 @@
 </head>
 <body>
   <header>
-    <h1>Shelfsignals · Allan Sekula Library</h1>
-    <p>Prototype overlay generated from catalog data – for internal discussion only.</p>
-    <button id="openConfig" class="icon-button" title="Color settings">⚙️</button>
+    <div>
+      <h1>Shelfsignals · Allan Sekula Library</h1>
+      <p>Prototype overlay generated from catalog data – for internal discussion only.</p>
+    </div>
+    <div style="display:flex;gap:0.5rem;align-items:center;">
+      <a href="responsive.html" class="icon-button" title="Switch to responsive view" aria-label="Switch to responsive view" style="text-decoration:none;">📱</a>
+      <a href="preview/index.html" class="icon-button" title="Preview environment" aria-label="Switch to preview environment" style="text-decoration:none;">🔬</a>
+      <button id="openConfig" class="icon-button" title="Color settings" aria-label="Open color settings">⚙️</button>
+    </div>
   </header>
   <div id="loadingOverlay" class="loading-overlay">
     <div class="spinner"></div>
@@ -797,6 +803,9 @@
   </main>
 
   <script type="module">
+    // Import catalog utility for consistent link building
+    import { buildCatalogUrl, buildExternalLinks as buildLinks } from './js/catalog.js';
+    
     const activeThemes = new Set([
       "image",
       "labor",
@@ -999,32 +1008,8 @@
     }
 
     function buildExternalLinks(book) {
-      const links = [];
-      if (book.record_url) {
-        links.push({ label: "View in catalog", href: book.record_url });
-      }
-      const isbn = book.isbn;
-      const query = encodeURIComponent(`${book.title} ${book.authors || ""}`.trim());
-      if (isbn) {
-        links.push({
-          label: "Search Amazon",
-          href: `https://www.amazon.com/s?k=${isbn}`
-        });
-        links.push({
-          label: "Find near me (WorldCat)",
-          href: `https://worldcat.org/search?q=bn%3A${isbn}`
-        });
-      } else if (query) {
-        links.push({
-          label: "Search Amazon",
-          href: `https://www.amazon.com/s?k=${query}`
-        });
-        links.push({
-          label: "Find near me (WorldCat)",
-          href: `https://worldcat.org/search?q=ti%3A${query}`
-        });
-      }
-      return links;
+      // Use centralized catalog utility for consistent link building
+      return buildLinks(book);
     }
 
     // Use subjects (split on |) and optional Sekula notes to derive themes
