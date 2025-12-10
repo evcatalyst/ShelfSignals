@@ -121,6 +121,22 @@ All three interfaces use a consistent approach to building catalog links:
 
 This ensures that catalog links always use the most appropriate URL format and provides a consistent experience across all views. The centralized utility is implemented in `docs/js/catalog.js` and can be easily tested and maintained.
 
+### Testing Catalog Links
+
+To verify catalog links are working correctly:
+
+1. **Manual Testing**: Click on any item in any view and check that the "View in Catalog" link:
+   - Uses the correct URL format (discovery URL or Primo permalink)
+   - Opens the item detail page in the library catalog
+   - Falls back gracefully when identifiers are missing
+
+2. **Sample Test Cases**:
+   - Items with `record_url`: Should use the full discovery URL
+   - Items with only `alma_mms`: Should build Primo permalink
+   - Items without identifiers: Should not show catalog link
+
+3. **Browser Console**: Check for any errors in the browser console when clicking catalog links
+
 ---
 
 ## Repository Structure (proposed)
