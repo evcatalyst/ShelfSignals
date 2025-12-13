@@ -922,15 +922,15 @@
           spine.classList.remove('dimmed');
           spine.style.outline = '';
           
-          // Apply signal styling (border variations)
-          if (item.signals.includes('image')) {
-            spine.style.borderStyle = 'solid';
-          }
-          if (item.signals.includes('labor')) {
-            spine.style.borderStyle = 'dashed';
-          }
-          if (item.signals.includes('capital')) {
-            spine.style.borderWidth = '3px';
+          // Apply signal styling from registry for consistency with legend
+          const signalMeta = SIGNALS.find(s => s.id === dominantSignal);
+          if (signalMeta?.legendStyle) {
+            signalMeta.legendStyle.split(';').forEach(rule => {
+              const [prop, value] = rule.split(':');
+              if (prop && value) {
+                spine.style.setProperty(prop.trim(), value.trim());
+              }
+            });
           }
           
           // Search highlighting
