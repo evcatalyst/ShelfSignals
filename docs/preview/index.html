@@ -919,6 +919,8 @@
             signalId: dominantSignal, 
             paletteKey: activePalette 
           });
+          spine.classList.remove('dimmed');
+          spine.style.outline = '';
           
           // Apply signal styling (border variations)
           if (item.signals.includes('image')) {
@@ -1383,7 +1385,7 @@
         loading.style.display = 'none';
       } catch (err) {
         console.error('Failed to load data:', err);
-        loading.innerHTML = '<div style="color:red;margin-bottom:0.5rem;">Failed to load Sekula data—check your connection and try again.</div>';
+        loading.innerHTML = '<div style="color:red;margin-bottom:0.5rem;">Failed to load Sekula data - check your connection and try again.</div>';
         const retry = document.createElement('button');
         retry.className = 'link-button';
         retry.textContent = 'Retry';

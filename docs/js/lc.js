@@ -23,7 +23,7 @@ export function parseLcCallNumber(callNumber) {
   const lcClass = match ? match[1].toUpperCase() : null;
 
   // Fallback: find any letter cluster if the start was messy
-  const fallbackClass = trimmed.match(/[A-Za-z]{1,3}/);
+  const fallbackClass = trimmed.match(/^[A-Za-z]{1,3}/);
   const finalClass = lcClass || (fallbackClass ? fallbackClass[0].toUpperCase() : null);
 
   const numericPart = match && match[2] ? match[2] : null;
