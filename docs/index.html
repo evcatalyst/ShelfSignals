@@ -802,7 +802,7 @@
     <div class="about-modal">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:0.5rem;margin-bottom:0.5rem;">
         <h3 style="margin:0;">About ShelfSignals</h3>
-        <button id="closeAbout" class="icon-button" type="button">Close</button>
+        <button id="closeAbout" class="icon-button" type="button" aria-label="Close about dialog">Close</button>
       </div>
       <p>
         <strong>ShelfSignals</strong> is a system-agnostic analytics framework for extracting structure,
@@ -2155,12 +2155,30 @@
       const aboutBackdrop = document.getElementById("aboutBackdrop");
       openAbout.addEventListener("click", () => {
         aboutBackdrop.style.display = "flex";
+        closeAbout.focus();
       });
       closeAbout.addEventListener("click", () => {
         aboutBackdrop.style.display = "none";
+        openAbout.focus();
       });
       aboutBackdrop.addEventListener("click", (e) => {
-        if (e.target === aboutBackdrop) aboutBackdrop.style.display = "none";
+        if (e.target === aboutBackdrop) {
+          aboutBackdrop.style.display = "none";
+          openAbout.focus();
+        }
+      });
+
+      // ESC key closes modals
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          if (aboutBackdrop.style.display === "flex") {
+            aboutBackdrop.style.display = "none";
+            openAbout.focus();
+          } else if (backdrop.style.display === "flex") {
+            backdrop.style.display = "none";
+            openConfig.focus();
+          }
+        }
       });
     }
 
