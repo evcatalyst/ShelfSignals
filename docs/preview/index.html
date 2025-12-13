@@ -923,15 +923,17 @@
             paletteKey: activePalette 
           });
           spine.classList.remove('dimmed');
-          spine.style.outline = '';
+          spine.style.removeProperty('outline');
           
           // Apply signal styling from registry for consistency with legend
           const signalMeta = SIGNAL_META_MAP.get(dominantSignal);
           if (signalMeta?.legendStyle) {
+            const allowedProps = new Set(['border-style', 'border-width', 'border-color', 'border-radius', 'opacity']);
             signalMeta.legendStyle.split(';').forEach(rule => {
               const [prop, value] = rule.split(':');
-              if (prop && value) {
-                spine.style.setProperty(prop.trim(), value.trim());
+              const trimmedProp = prop && prop.trim();
+              if (trimmedProp && value && allowedProps.has(trimmedProp)) {
+                spine.style.setProperty(trimmedProp, value.trim());
               }
             });
           }
