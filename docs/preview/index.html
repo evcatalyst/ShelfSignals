@@ -675,6 +675,9 @@
     const activeSignals = new Set(SIGNAL_IDS);
     let colorMode = 'signals';
     let activePalette = getActivePalette();
+    const SIGNAL_META_MAP = new Map(SIGNALS.map(s => [s.id, s]));
+    const MAX_SAMPLE_POOL_SIZE = 200;
+    const MAX_SAMPLE_TITLES = 10;
 
     // Memoization caches
     const renderCache = new Map();
@@ -923,7 +926,7 @@
           spine.style.outline = '';
           
           // Apply signal styling from registry for consistency with legend
-          const signalMeta = SIGNALS.find(s => s.id === dominantSignal);
+          const signalMeta = SIGNAL_META_MAP.get(dominantSignal);
           if (signalMeta?.legendStyle) {
             signalMeta.legendStyle.split(';').forEach(rule => {
               const [prop, value] = rule.split(':');
@@ -1107,14 +1110,14 @@
       samplesSection.appendChild(sampleHeading);
 
       const searchActive = searchState.isActive();
-      const samplePool = peerItems.slice(0, 200);
+      const samplePool = peerItems.slice(0, MAX_SAMPLE_POOL_SIZE);
       const sortedSamples = samplePool.sort((a, b) => {
         const aMatch = a._lastMatch && a._lastMatch.matches ? 1 : 0;
         const bMatch = b._lastMatch && b._lastMatch.matches ? 1 : 0;
         if (bMatch !== aMatch) return bMatch - aMatch;
         if (a.yearPrimary && b.yearPrimary) return a.yearPrimary - b.yearPrimary;
         return (a.lcKey || '').localeCompare(b.lcKey || '');
-      }).slice(0, 10);
+      }).slice(0, MAX_SAMPLE_TITLES);
 
       const listEl = document.createElement('div');
       listEl.style.display = 'flex';
