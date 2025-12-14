@@ -820,7 +820,7 @@
       <div class="size-legend">
         <h3>
           Book Sizes 
-          <button id="helpIconBtn" class="help-icon" aria-label="Show/hide help: Spine height shows number of thematic signals" aria-expanded="true" tabindex="0">?</button>
+          <button id="helpIconBtn" class="help-icon" aria-label="Hide help: Spine height shows number of thematic signals" aria-expanded="true" tabindex="0">?</button>
         </h3>
         <p id="sizeLegendHelp" style="font-size:0.85rem;margin:0 0 0.5rem;color:var(--muted);">
           Spine height represents the number of thematic signals (themes) found in each item's metadata.
@@ -1320,12 +1320,15 @@
       const sizeLegendHelp = document.getElementById('sizeLegendHelp');
       if (helpIconBtn && sizeLegendHelp) {
         helpIconBtn.addEventListener('click', () => {
-          const isHidden = getComputedStyle(sizeLegendHelp).display === 'none';
-          sizeLegendHelp.style.display = isHidden ? '' : 'none';
-          helpIconBtn.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
-          helpIconBtn.setAttribute('aria-label', isHidden 
-            ? 'Show help: Spine height shows number of thematic signals'
-            : 'Hide help: Spine height shows number of thematic signals'
+          const isCurrentlyHidden = getComputedStyle(sizeLegendHelp).display === 'none';
+          // Toggle visibility
+          sizeLegendHelp.style.display = isCurrentlyHidden ? '' : 'none';
+          // Update ARIA states based on new visibility
+          const willBeVisible = isCurrentlyHidden;
+          helpIconBtn.setAttribute('aria-expanded', willBeVisible ? 'true' : 'false');
+          helpIconBtn.setAttribute('aria-label', willBeVisible 
+            ? 'Hide help: Spine height shows number of thematic signals'
+            : 'Show help: Spine height shows number of thematic signals'
           );
         });
       }
