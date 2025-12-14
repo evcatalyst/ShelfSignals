@@ -820,9 +820,9 @@
       <div class="size-legend">
         <h3>
           Book Sizes 
-          <button class="help-icon" aria-label="Help: Spine height shows number of thematic signals" tabindex="0">?</button>
+          <button id="helpIconBtn" class="help-icon" aria-label="Show/hide help: Spine height shows number of thematic signals" aria-expanded="true" tabindex="0">?</button>
         </h3>
-        <p style="font-size:0.85rem;margin:0 0 0.5rem;color:var(--muted);">
+        <p id="sizeLegendHelp" style="font-size:0.85rem;margin:0 0 0.5rem;color:var(--muted);">
           Spine height represents the number of thematic signals (themes) found in each item's metadata.
         </p>
         <div class="size-examples">
@@ -1005,11 +1005,18 @@
     }
 
     // Calculate spine height based on signal count
+    // Uses discrete buckets matching the documented legend:
+    // 0 signals: 40px, 1-2: 56px, 3-4: 72px, 5+: 88px
     function getSpineHeight(signalCount) {
-      // Base height + 8px per signal
-      const baseHeight = 40;
-      const heightPerSignal = 8;
-      return Math.min(baseHeight + (signalCount * heightPerSignal), 100);
+      if (signalCount === 0) {
+        return 40;
+      } else if (signalCount <= 2) {
+        return 56;
+      } else if (signalCount <= 4) {
+        return 72;
+      } else {
+        return 88;
+      }
     }
 
     // Render shelf view
@@ -1053,7 +1060,10 @@
         
         const count = document.createElement('div');
         count.className = 'shelf-count';
-        count.textContent = `${group.items.length} items`;
+        const displayCount = Math.min(group.items.length, 50);
+        count.textContent = group.items.length > 50 
+          ? `Showing ${displayCount} of ${group.items.length} items` 
+          : `${group.items.length} items`;
         
         header.appendChild(label);
         header.appendChild(count);
@@ -1156,7 +1166,13 @@
       if (selectedItem.call_number) {
         metaParts.push(`Call Number: ${selectedItem.call_number}`);
       }
-      meta.innerHTML = metaParts.join('<br>');
+      // Safely add meta parts with <br> separators
+      metaParts.forEach((part, idx) => {
+        meta.appendChild(document.createTextNode(part));
+        if (idx < metaParts.length - 1) {
+          meta.appendChild(document.createElement('br'));
+        }
+      });
       titleSection.appendChild(meta);
       
       body.appendChild(titleSection);
@@ -1256,6 +1272,55 @@
         colorByClass = toggleClassColors.checked;
         renderShelfView();
       });
+      
+      // "All Signals" checkbox functionality
+      const allSignalsCheckbox = document.querySelector('input[value="all"]');
+      if (allSignalsCheckbox) {
+        allSignalsCheckbox.addEventListener('change', () => {
+          const individualCheckboxes = document.querySelectorAll('#signalFilters input[type="checkbox"]');
+          individualCheckboxes.forEach(cb => {
+            cb.checked = allSignalsCheckbox.checked;
+            const signal = cb.value;
+            if (allSignalsCheckbox.checked) {
+              activeSignals.add(signal);
+            } else {
+              activeSignals.delete(signal);
+            }
+          });
+          renderShelfView();
+        });
+        
+        // Update "All Signals" checkbox state when individual checkboxes change
+        const updateAllSignalsCheckbox = () => {
+          const individualCheckboxes = document.querySelectorAll('#signalFilters input[type="checkbox"]');
+          const allChecked = Array.from(individualCheckboxes).every(cb => cb.checked);
+          allSignalsCheckbox.checked = allChecked;
+        };
+        
+        // Attach to individual signal checkboxes (will be called after initSignalFilters)
+        const observer = new MutationObserver(() => {
+          const individualCheckboxes = document.querySelectorAll('#signalFilters input[type="checkbox"]');
+          individualCheckboxes.forEach(cb => {
+            cb.addEventListener('change', updateAllSignalsCheckbox);
+          });
+        });
+        observer.observe(document.getElementById('signalFilters'), { childList: true, subtree: true });
+      }
+      
+      // Help icon functionality - toggle legend explanation
+      const helpIconBtn = document.getElementById('helpIconBtn');
+      const sizeLegendHelp = document.getElementById('sizeLegendHelp');
+      if (helpIconBtn && sizeLegendHelp) {
+        helpIconBtn.addEventListener('click', () => {
+          const isHidden = sizeLegendHelp.style.display === 'none';
+          sizeLegendHelp.style.display = isHidden ? '' : 'none';
+          helpIconBtn.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+          helpIconBtn.setAttribute('aria-label', isHidden 
+            ? 'Hide help: Spine height shows number of thematic signals'
+            : 'Show help: Spine height shows number of thematic signals'
+          );
+        });
+      }
       
       // Mobile filter panel controls
       const mobileFilterBtn = document.getElementById('mobileFilterBtn');

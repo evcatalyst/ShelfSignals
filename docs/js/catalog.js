@@ -16,6 +16,11 @@
  * @returns {string|null} - Catalog URL or null if unavailable
  */
 export function buildCatalogUrl(item) {
+  // Guard against null/undefined item
+  if (!item || typeof item !== 'object') {
+    return null;
+  }
+  
   // Priority 1: Use existing record_url if available
   if (item.record_url && typeof item.record_url === 'string' && item.record_url.trim()) {
     return item.record_url.trim();
@@ -26,7 +31,8 @@ export function buildCatalogUrl(item) {
   if (item.alma_mms && typeof item.alma_mms === 'string' && item.alma_mms.trim()) {
     const mmsId = item.alma_mms.trim();
     // Use the Primo permalink format that integrates better with the discovery layer
-    return `https://clark.primo.exlibrisgroup.com/permalink/01CLARKART_INST/1gqonkq/${mmsId}`;
+    // Encode the mmsId for URL safety
+    return `https://clark.primo.exlibrisgroup.com/permalink/01CLARKART_INST/1gqonkq/${encodeURIComponent(mmsId)}`;
   }
   
   // No valid identifiers
@@ -39,6 +45,11 @@ export function buildCatalogUrl(item) {
  * @returns {Array<{label: string, href: string}>} - Array of external links
  */
 export function buildExternalLinks(item) {
+  // Guard against null/undefined item
+  if (!item || typeof item !== 'object') {
+    return [];
+  }
+  
   const links = [];
   
   // Catalog link
@@ -55,11 +66,11 @@ export function buildExternalLinks(item) {
   if (isbn) {
     links.push({
       label: 'Search Amazon',
-      href: `https://www.amazon.com/s?k=${isbn}`
+      href: `https://www.amazon.com/s?k=${encodeURIComponent(isbn)}`
     });
     links.push({
       label: 'Find near me (WorldCat)',
-      href: `https://worldcat.org/search?q=bn%3A${isbn}`
+      href: `https://worldcat.org/search?q=bn%3A${encodeURIComponent(isbn)}`
     });
   } else {
     // Fallback to title-based search
