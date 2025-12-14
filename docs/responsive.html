@@ -1298,11 +1298,19 @@
         };
         
         // Attach to individual signal checkboxes (will be called after initSignalFilters)
+        const handledCheckboxes = new Set();
         const observer = new MutationObserver(() => {
           const individualCheckboxes = document.querySelectorAll('#signalFilters input[type="checkbox"]');
           individualCheckboxes.forEach(cb => {
-            cb.addEventListener('change', updateAllSignalsCheckbox);
+            if (!handledCheckboxes.has(cb)) {
+              cb.addEventListener('change', updateAllSignalsCheckbox);
+              handledCheckboxes.add(cb);
+            }
           });
+          // Disconnect once all checkboxes are handled
+          if (individualCheckboxes.length > 0 && individualCheckboxes.length === handledCheckboxes.size) {
+            observer.disconnect();
+          }
         });
         observer.observe(document.getElementById('signalFilters'), { childList: true, subtree: true });
       }
@@ -1312,12 +1320,12 @@
       const sizeLegendHelp = document.getElementById('sizeLegendHelp');
       if (helpIconBtn && sizeLegendHelp) {
         helpIconBtn.addEventListener('click', () => {
-          const isHidden = sizeLegendHelp.style.display === 'none';
+          const isHidden = getComputedStyle(sizeLegendHelp).display === 'none';
           sizeLegendHelp.style.display = isHidden ? '' : 'none';
           helpIconBtn.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
           helpIconBtn.setAttribute('aria-label', isHidden 
-            ? 'Hide help: Spine height shows number of thematic signals'
-            : 'Show help: Spine height shows number of thematic signals'
+            ? 'Show help: Spine height shows number of thematic signals'
+            : 'Hide help: Spine height shows number of thematic signals'
           );
         });
       }
