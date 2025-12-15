@@ -57,11 +57,11 @@ ShelfSignals provides two web interfaces for exploring the Sekula Library collec
 ### Production Site (`/`)
 - **Location**: `docs/index.html`
 - **Data Source**: `docs/data/sekula_inventory.json` (CSV-compatible format)
-- **Status**: Stable, current production interface
+- **Status**: ⚠️ **Deprecated** - Known performance issues and freezing. Please use Preview v2.x
 - **Access URL**: https://evcatalyst.github.io/ShelfSignals/
 - **Direct link**: [Production Site](https://evcatalyst.github.io/ShelfSignals/)
 
-The production site provides a mature interface with CSV-based data loading and legacy controls. It includes shelf visualization, cluster mapping, and detailed item views.
+⚠️ **Note**: This v1.x interface has known performance issues. Users are redirected to the Preview v2.x environment for the best experience.
 
 ### Preview Environment (`/preview/`)
 - **Location**: `docs/preview/index.html`
