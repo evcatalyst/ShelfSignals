@@ -522,6 +522,365 @@
         font-size: 1.2rem;
       }
     }
+
+    /* Book Modal Viewer */
+    .book-modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 300;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .book-modal-backdrop.active {
+      display: flex;
+    }
+
+    .book-modal {
+      background: #fff;
+      border-radius: 0.75rem;
+      max-width: 700px;
+      width: 100%;
+      max-height: 90vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+      position: relative;
+    }
+
+    .book-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 1.5rem 1.5rem 1rem;
+      border-bottom: 1px solid var(--border);
+      gap: 1rem;
+    }
+
+    .book-modal-title-section {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .book-modal-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin: 0 0 0.5rem;
+      line-height: 1.3;
+      color: var(--primary);
+    }
+
+    .book-modal-meta {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .book-modal-close {
+      background: transparent;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.25rem;
+      color: var(--muted);
+      flex-shrink: 0;
+      line-height: 1;
+    }
+
+    .book-modal-close:hover {
+      color: var(--primary);
+    }
+
+    .book-modal-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem;
+    }
+
+    .book-modal-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .book-modal-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .book-modal-section h3 {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin: 0 0 0.75rem;
+    }
+
+    .book-modal-description {
+      line-height: 1.6;
+      color: var(--primary);
+    }
+
+    .book-modal-subjects {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .subject-tag {
+      background: var(--chip-bg);
+      padding: 0.3rem 0.6rem;
+      border-radius: 0.3rem;
+      font-size: 0.85rem;
+    }
+
+    .book-modal-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .modal-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1rem;
+      background: #fff;
+      border: 2px solid var(--border);
+      border-radius: 0.5rem;
+      text-decoration: none;
+      color: var(--primary);
+      font-weight: 500;
+      transition: all 0.15s ease;
+    }
+
+    .modal-link:hover {
+      border-color: var(--accent);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .modal-link-icon {
+      font-size: 1.2rem;
+    }
+
+    .book-modal-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .modal-nav-buttons {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .modal-nav-button {
+      background: #fff;
+      border: 2px solid var(--border);
+      border-radius: 0.4rem;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .modal-nav-button:hover:not(:disabled) {
+      border-color: var(--accent);
+      background: #f0f7ff;
+    }
+
+    .modal-nav-button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .modal-action-buttons {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .modal-action-button {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 0.4rem;
+      padding: 0.6rem 1.2rem;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 0.15s ease;
+    }
+
+    .modal-action-button:hover {
+      background: #1565a0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .modal-action-button.secondary {
+      background: #fff;
+      color: var(--primary);
+      border: 2px solid var(--border);
+    }
+
+    .modal-action-button.secondary:hover {
+      border-color: var(--accent);
+      background: #f0f7ff;
+    }
+
+    /* Cart/Shelf Panel */
+    .cart-badge {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .cart-count {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: #e74c3c;
+      color: #fff;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+
+    .cart-panel {
+      display: none;
+      position: fixed;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: min(400px, 90vw);
+      background: #fff;
+      box-shadow: -4px 0 20px rgba(0,0,0,0.2);
+      z-index: 250;
+      flex-direction: column;
+    }
+
+    .cart-panel.active {
+      display: flex;
+    }
+
+    .cart-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cart-header h2 {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+
+    .cart-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+    }
+
+    .cart-item {
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 0.75rem;
+      margin-bottom: 0.75rem;
+      background: #fafafa;
+    }
+
+    .cart-item-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .cart-item-meta {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .cart-item-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .cart-item-button {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 0.3rem;
+      padding: 0.3rem 0.6rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .cart-item-button:hover {
+      border-color: var(--accent);
+      background: #f0f7ff;
+    }
+
+    .cart-item-button.remove {
+      border-color: #e74c3c;
+      color: #e74c3c;
+    }
+
+    .cart-item-button.remove:hover {
+      background: #ffe6e6;
+    }
+
+    .cart-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 0.5rem;
+      flex-direction: column;
+    }
+
+    .cart-empty {
+      text-align: center;
+      padding: 3rem 1.5rem;
+      color: var(--muted);
+    }
+
+    @media (max-width: 600px) {
+      .book-modal {
+        max-width: 100%;
+        border-radius: 0;
+        max-height: 100vh;
+      }
+
+      .book-modal-header, .book-modal-body, .book-modal-footer {
+        padding: 1rem;
+      }
+
+      .book-modal-title {
+        font-size: 1.1rem;
+      }
+
+      .modal-nav-buttons, .modal-action-buttons {
+        width: 100%;
+      }
+
+      .modal-nav-button, .modal-action-button {
+        flex: 1;
+      }
+    }
   </style>
 </head>
 <body>
@@ -619,6 +978,49 @@
     </div>
   </div>
 
+  <!-- Book Modal -->
+  <div id="bookModalBackdrop" class="book-modal-backdrop" role="dialog" aria-labelledby="bookModalTitle" aria-modal="true">
+    <div class="book-modal">
+      <div class="book-modal-header">
+        <div class="book-modal-title-section">
+          <h2 id="bookModalTitle" class="book-modal-title"></h2>
+          <div id="bookModalMeta" class="book-modal-meta"></div>
+        </div>
+        <button id="closeBookModal" class="book-modal-close" aria-label="Close book details">✕</button>
+      </div>
+      <div id="bookModalBody" class="book-modal-body"></div>
+      <div class="book-modal-footer">
+        <div class="modal-nav-buttons">
+          <button id="modalPrevBook" class="modal-nav-button">
+            <span>←</span>
+            <span>Previous</span>
+          </button>
+          <button id="modalNextBook" class="modal-nav-button">
+            <span>Next</span>
+            <span>→</span>
+          </button>
+        </div>
+        <div class="modal-action-buttons">
+          <button id="addToCart" class="modal-action-button secondary">Add to Cart</button>
+          <button id="addToShelf" class="modal-action-button">Add to Shelf</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart/Shelf Panel -->
+  <div id="cartPanel" class="cart-panel">
+    <div class="cart-header">
+      <h2 id="cartPanelTitle">My Shelf</h2>
+      <button id="closeCart" class="link-button" aria-label="Close shelf">✕</button>
+    </div>
+    <div id="cartBody" class="cart-body"></div>
+    <div class="cart-footer">
+      <button id="clearCart" class="modal-action-button secondary" style="width:100%;">Clear All</button>
+      <button id="exportCart" class="modal-action-button" style="width:100%;">Export List</button>
+    </div>
+  </div>
+
   <header>
     <div>
       <h1>ShelfSignals Preview</h1>
@@ -627,6 +1029,10 @@
     <div class="header-controls">
       <button id="openAbout" class="link-button">About</button>
       <button id="openConfig" class="link-button">Color Settings</button>
+      <button id="openCart" class="link-button cart-badge">
+        📚 My Shelf
+        <span id="cartCount" class="cart-count" style="display:none;">0</span>
+      </button>
     </div>
   </header>
 
@@ -695,6 +1101,346 @@
 
     // Memoization caches
     const renderCache = new Map();
+
+    // Modal and cart state
+    let modalCurrentIndex = -1;
+    let modalFilteredItems = [];
+    let shelf = [];
+    const SHELF_STORAGE_KEY = 'shelfsignals_shelf';
+
+    // Cart/Shelf Management
+    function loadShelf() {
+      try {
+        const stored = localStorage.getItem(SHELF_STORAGE_KEY);
+        return stored ? JSON.parse(stored) : [];
+      } catch (e) {
+        console.error('Failed to load shelf:', e);
+        return [];
+      }
+    }
+
+    function saveShelf() {
+      try {
+        localStorage.setItem(SHELF_STORAGE_KEY, JSON.stringify(shelf));
+        updateCartBadge();
+      } catch (e) {
+        console.error('Failed to save shelf:', e);
+      }
+    }
+
+    function addToShelf(item) {
+      if (!shelf.find(i => i.id === item.id)) {
+        shelf.push({
+          id: item.id,
+          title: item.title,
+          authors: item.authors,
+          yearPrimary: item.yearPrimary,
+          call_number: item.call_number,
+          catalogLink: item.catalogLink,
+          signals: item.signals
+        });
+        saveShelf();
+        renderCartPanel();
+        showNotification(`Added "${item.title}" to shelf`);
+      } else {
+        showNotification(`"${item.title}" is already in your shelf`);
+      }
+    }
+
+    function removeFromShelf(id) {
+      shelf = shelf.filter(i => i.id !== id);
+      saveShelf();
+      renderCartPanel();
+    }
+
+    function clearShelf() {
+      if (confirm('Clear all items from your shelf?')) {
+        shelf = [];
+        saveShelf();
+        renderCartPanel();
+        showNotification('Shelf cleared');
+      }
+    }
+
+    function exportShelf() {
+      if (shelf.length === 0) {
+        showNotification('Your shelf is empty');
+        return;
+      }
+      
+      const text = shelf.map((item, i) => 
+        `${i + 1}. ${item.title}` +
+        (item.authors && item.authors.length ? ` — ${item.authors.join(', ')}` : '') +
+        (item.yearPrimary ? ` (${item.yearPrimary})` : '') +
+        (item.call_number ? ` [${item.call_number}]` : '') +
+        (item.catalogLink ? `\\n   ${item.catalogLink}` : '')
+      ).join('\\n\\n');
+      
+      const blob = new Blob([text], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `shelfsignals-shelf-${new Date().toISOString().split('T')[0]}.txt`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showNotification('Shelf exported');
+    }
+
+    function updateCartBadge() {
+      const badge = document.getElementById('cartCount');
+      if (shelf.length > 0) {
+        badge.textContent = shelf.length;
+        badge.style.display = 'flex';
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+
+    function renderCartPanel() {
+      const body = document.getElementById('cartBody');
+      body.innerHTML = '';
+      
+      if (shelf.length === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'cart-empty';
+        empty.innerHTML = '📚<br><br>Your shelf is empty<br><small style="color:var(--muted);">Click "Add to Shelf" on any book to save it here</small>';
+        body.appendChild(empty);
+        return;
+      }
+      
+      for (const item of shelf) {
+        const card = document.createElement('div');
+        card.className = 'cart-item';
+        
+        const title = document.createElement('div');
+        title.className = 'cart-item-title';
+        title.textContent = item.title;
+        card.appendChild(title);
+        
+        const meta = document.createElement('div');
+        meta.className = 'cart-item-meta';
+        const parts = [];
+        if (item.authors && item.authors.length) parts.push(item.authors.join(', '));
+        if (item.yearPrimary) parts.push(item.yearPrimary);
+        if (item.call_number) parts.push(item.call_number);
+        meta.textContent = parts.join(' · ');
+        card.appendChild(meta);
+        
+        if (item.signals && item.signals.length) {
+          const badges = document.createElement('div');
+          badges.style.marginBottom = '0.5rem';
+          item.signals.forEach(sig => {
+            const badge = document.createElement('span');
+            badge.className = 'signal-badge';
+            badge.textContent = SIGNAL_LABELS[sig];
+            badges.appendChild(badge);
+          });
+          card.appendChild(badges);
+        }
+        
+        const actions = document.createElement('div');
+        actions.className = 'cart-item-actions';
+        
+        if (item.catalogLink) {
+          const viewBtn = document.createElement('a');
+          viewBtn.href = item.catalogLink;
+          viewBtn.target = '_blank';
+          viewBtn.rel = 'noopener noreferrer';
+          viewBtn.className = 'cart-item-button';
+          viewBtn.textContent = 'View';
+          actions.appendChild(viewBtn);
+        }
+        
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'cart-item-button remove';
+        removeBtn.textContent = 'Remove';
+        removeBtn.addEventListener('click', () => removeFromShelf(item.id));
+        actions.appendChild(removeBtn);
+        
+        card.appendChild(actions);
+        body.appendChild(card);
+      }
+    }
+
+    function showNotification(message) {
+      // Simple toast notification
+      const toast = document.createElement('div');
+      toast.style.cssText = 'position:fixed;bottom:2rem;right:2rem;background:#333;color:#fff;padding:1rem 1.5rem;border-radius:0.5rem;box-shadow:0 4px 12px rgba(0,0,0,0.3);z-index:1000;font-size:0.9rem;';
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => {
+        toast.style.transition = 'opacity 0.3s ease';
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+      }, 2000);
+    }
+
+    // Book Modal Management
+    function openBookModal(item, filteredItems) {
+      modalFilteredItems = filteredItems;
+      modalCurrentIndex = filteredItems.findIndex(i => i.id === item.id);
+      
+      if (modalCurrentIndex === -1) {
+        modalFilteredItems = [item];
+        modalCurrentIndex = 0;
+      }
+      
+      renderBookModal(item);
+      
+      const backdrop = document.getElementById('bookModalBackdrop');
+      backdrop.classList.add('active');
+      
+      // Prevent body scroll
+      document.body.style.overflow = 'hidden';
+      
+      // Focus close button
+      document.getElementById('closeBookModal').focus();
+    }
+
+    function closeBookModal() {
+      const backdrop = document.getElementById('bookModalBackdrop');
+      backdrop.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function navigateModal(direction) {
+      const newIndex = modalCurrentIndex + direction;
+      if (newIndex >= 0 && newIndex < modalFilteredItems.length) {
+        modalCurrentIndex = newIndex;
+        renderBookModal(modalFilteredItems[modalCurrentIndex]);
+      }
+    }
+
+    function renderBookModal(item) {
+      const title = document.getElementById('bookModalTitle');
+      const meta = document.getElementById('bookModalMeta');
+      const body = document.getElementById('bookModalBody');
+      const prevBtn = document.getElementById('modalPrevBook');
+      const nextBtn = document.getElementById('modalNextBook');
+      
+      title.textContent = item.title || 'Untitled';
+      
+      const metaParts = [];
+      if (item.authors && item.authors.length) metaParts.push(`By ${item.authors.join(', ')}`);
+      if (item.yearPrimary) metaParts.push(item.yearPrimary);
+      if (item.call_number) metaParts.push(item.call_number);
+      meta.innerHTML = metaParts.join(' · ');
+      
+      body.innerHTML = '';
+      
+      // Subjects section
+      if (item.subjects && item.subjects.length) {
+        const section = document.createElement('div');
+        section.className = 'book-modal-section';
+        
+        const heading = document.createElement('h3');
+        heading.textContent = 'Subjects';
+        section.appendChild(heading);
+        
+        const subjectsDiv = document.createElement('div');
+        subjectsDiv.className = 'book-modal-subjects';
+        item.subjects.slice(0, 10).forEach(subj => {
+          const tag = document.createElement('span');
+          tag.className = 'subject-tag';
+          tag.textContent = subj;
+          subjectsDiv.appendChild(tag);
+        });
+        section.appendChild(subjectsDiv);
+        body.appendChild(section);
+      }
+      
+      // Signals section
+      if (item.signals && item.signals.length) {
+        const section = document.createElement('div');
+        section.className = 'book-modal-section';
+        
+        const heading = document.createElement('h3');
+        heading.textContent = 'Detected Signals';
+        section.appendChild(heading);
+        
+        const badges = document.createElement('div');
+        badges.className = 'book-modal-subjects';
+        item.signals.forEach(sig => {
+          const badge = document.createElement('span');
+          badge.className = 'signal-badge';
+          badge.textContent = SIGNAL_LABELS[sig];
+          badges.appendChild(badge);
+        });
+        section.appendChild(badges);
+        body.appendChild(section);
+      }
+      
+      // Notes section
+      if (item.sekula_notes && item.sekula_notes.length) {
+        const section = document.createElement('div');
+        section.className = 'book-modal-section';
+        
+        const heading = document.createElement('h3');
+        heading.textContent = 'Notes';
+        section.appendChild(heading);
+        
+        const desc = document.createElement('div');
+        desc.className = 'book-modal-description';
+        desc.textContent = item.sekula_notes.join(' | ');
+        section.appendChild(desc);
+        body.appendChild(section);
+      }
+      
+      // Links section
+      const linksSection = document.createElement('div');
+      linksSection.className = 'book-modal-section';
+      
+      const linksHeading = document.createElement('h3');
+      linksHeading.textContent = 'External Resources';
+      linksSection.appendChild(linksHeading);
+      
+      const linksDiv = document.createElement('div');
+      linksDiv.className = 'book-modal-links';
+      
+      if (item.catalogLink) {
+        const link = document.createElement('a');
+        link.href = item.catalogLink;
+        link.className = 'modal-link';
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.innerHTML = '<span class="modal-link-icon">🏛️</span> <span>View in Clark Catalog</span>';
+        linksDiv.appendChild(link);
+      }
+      
+      // Build WorldCat and Amazon links
+      const titleQuery = encodeURIComponent(item.title || '');
+      const authorQuery = item.authors && item.authors.length ? encodeURIComponent(item.authors.join(' ')) : '';
+      
+      const worldcatLink = document.createElement('a');
+      worldcatLink.href = `https://worldcat.org/search?q=${titleQuery}${authorQuery ? '+' + authorQuery : ''}`;
+      worldcatLink.className = 'modal-link';
+      worldcatLink.target = '_blank';
+      worldcatLink.rel = 'noopener noreferrer';
+      worldcatLink.innerHTML = '<span class="modal-link-icon">🌎</span> <span>Find in WorldCat</span>';
+      linksDiv.appendChild(worldcatLink);
+      
+      const amazonLink = document.createElement('a');
+      amazonLink.href = `https://www.amazon.com/s?k=${titleQuery}${authorQuery ? '+' + authorQuery : ''}`;
+      amazonLink.className = 'modal-link';
+      amazonLink.target = '_blank';
+      amazonLink.rel = 'noopener noreferrer';
+      amazonLink.innerHTML = '<span class="modal-link-icon">📦</span> <span>Search on Amazon</span>';
+      linksDiv.appendChild(amazonLink);
+      
+      linksSection.appendChild(linksDiv);
+      body.appendChild(linksSection);
+      
+      // Update navigation buttons
+      prevBtn.disabled = modalCurrentIndex <= 0;
+      nextBtn.disabled = modalCurrentIndex >= modalFilteredItems.length - 1;
+      
+      // Update action buttons
+      const addToShelfBtn = document.getElementById('addToShelf');
+      const addToCartBtn = document.getElementById('addToCart');
+      
+      addToShelfBtn.onclick = () => addToShelf(item);
+      addToCartBtn.onclick = () => addToShelf(item); // Both add to shelf for simplicity
+    }
 
     // Initialize signal filters
     function initSignalFilters() {
@@ -967,12 +1713,12 @@
             spine.classList.add('selected');
           }
           
-          // Click handler
+          // Click handler - open modal instead of just updating detail panel
           const selectItem = () => {
             selectionLost = false;
             selectedItem = item;
-            renderShelfView();
-            renderDetailPanel();
+            const filtered = getFilteredItems();
+            openBookModal(item, filtered);
           };
           
           spine.addEventListener('click', selectItem);
@@ -1355,16 +2101,60 @@
         }
       });
       
+      // Book Modal
+      const closeBookModalBtn = document.getElementById('closeBookModal');
+      const bookModalBackdrop = document.getElementById('bookModalBackdrop');
+      const modalPrevBook = document.getElementById('modalPrevBook');
+      const modalNextBook = document.getElementById('modalNextBook');
+      
+      closeBookModalBtn.addEventListener('click', closeBookModal);
+      
+      bookModalBackdrop.addEventListener('click', (e) => {
+        if (e.target === bookModalBackdrop) {
+          closeBookModal();
+        }
+      });
+      
+      modalPrevBook.addEventListener('click', () => navigateModal(-1));
+      modalNextBook.addEventListener('click', () => navigateModal(1));
+      
+      // Cart/Shelf Panel
+      const openCart = document.getElementById('openCart');
+      const closeCart = document.getElementById('closeCart');
+      const cartPanel = document.getElementById('cartPanel');
+      const clearCart = document.getElementById('clearCart');
+      const exportCart = document.getElementById('exportCart');
+      
+      openCart.addEventListener('click', () => {
+        cartPanel.classList.add('active');
+        renderCartPanel();
+      });
+      
+      closeCart.addEventListener('click', () => {
+        cartPanel.classList.remove('active');
+      });
+      
+      clearCart.addEventListener('click', () => clearShelf());
+      exportCart.addEventListener('click', () => exportShelf());
+      
       // ESC to close dialogs
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
-          if (aboutBackdrop.style.display === 'flex') {
+          if (bookModalBackdrop.classList.contains('active')) {
+            closeBookModal();
+          } else if (cartPanel.classList.contains('active')) {
+            cartPanel.classList.remove('active');
+          } else if (aboutBackdrop.style.display === 'flex') {
             aboutBackdrop.style.display = 'none';
             openAbout.focus();
           } else if (backdrop.style.display === 'flex') {
             backdrop.style.display = 'none';
             openConfig.focus();
           }
+        } else if (e.key === 'ArrowLeft' && bookModalBackdrop.classList.contains('active')) {
+          navigateModal(-1);
+        } else if (e.key === 'ArrowRight' && bookModalBackdrop.classList.contains('active')) {
+          navigateModal(1);
         }
       });
     }
@@ -1394,6 +2184,8 @@
         enrichedInventory = enrichInventory(inventory);
         
         // Initialize UI
+        shelf = loadShelf();
+        updateCartBadge();
         initSignalFilters();
         initSignalLegend();
         initEventHandlers();
