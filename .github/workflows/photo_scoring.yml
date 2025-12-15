@@ -1,0 +1,112 @@
+name: Photo Likelihood Scoring
+
+on:
+  workflow_dispatch:
+    inputs:
+      use_mock:
+        description: 'Use mock responses instead of API calls'
+        required: false
+        type: boolean
+        default: false
+      chunk_size:
+        description: 'Number of records per chunk'
+        required: false
+        type: number
+        default: 100
+  # Optional: schedule for automatic runs
+  # schedule:
+  #   - cron: '0 2 * * 0'  # Weekly on Sunday at 2 AM UTC
+
+permissions:
+  contents: write
+
+jobs:
+  score-photos:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+          
+      - name: Generate feature packets
+        run: |
+          python scripts/photo_feature_extractor.py \
+            --input docs/data/sekula_index.json \
+            --output docs/data/photo_feature_packets.jsonl
+            
+      - name: Score with Grok API
+        env:
+          XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
+        run: |
+          RUN_ID="workflow-${{ github.run_number }}-$(date +%Y%m%d-%H%M%S)"
+          
+          if [ "${{ inputs.use_mock }}" = "true" ]; then
+            echo "Using mock responses (no API calls)"
+            python scripts/photo_likelihood_scorer.py \
+              --input docs/data/photo_feature_packets.jsonl \
+              --output docs/data/photo_scored.jsonl \
+              --mock \
+              --chunk-size ${{ inputs.chunk_size || 100 }} \
+              --run-id "$RUN_ID"
+          else
+            echo "Using xAI Grok API"
+            python scripts/photo_likelihood_scorer.py \
+              --input docs/data/photo_feature_packets.jsonl \
+              --output docs/data/photo_scored.jsonl \
+              --chunk-size ${{ inputs.chunk_size || 100 }} \
+              --run-id "$RUN_ID"
+          fi
+          
+      - name: Generate enriched CSV
+        run: |
+          python scripts/merge_scores_to_csv.py \
+            --input docs/data/sekula_index.json \
+            --scores docs/data/photo_scored.jsonl \
+            --output docs/data/sekula_index_enriched.csv
+            
+      - name: Log statistics
+        run: |
+          echo "=== Photo Likelihood Scoring Results ==="
+          echo ""
+          echo "Run ID: workflow-${{ github.run_number }}-$(date +%Y%m%d-%H%M%S)"
+          echo "Timestamp: $(date -Iseconds)"
+          echo "Mock mode: ${{ inputs.use_mock }}"
+          echo ""
+          
+          # Count total records
+          TOTAL=$(wc -l < docs/data/photo_scored.jsonl)
+          echo "Total records scored: $TOTAL"
+          echo ""
+          
+          # Count by bucket
+          echo "Score distribution:"
+          grep -o '"photo_insert_bucket": "[^"]*"' docs/data/photo_scored.jsonl | cut -d'"' -f4 | sort | uniq -c | sort -rn
+          echo ""
+          
+          # Statistics
+          echo "Files generated:"
+          ls -lh docs/data/photo_feature_packets.jsonl docs/data/photo_scored.jsonl docs/data/sekula_index_enriched.csv 2>/dev/null || true
+          
+      - name: Commit enriched data
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          
+          git add docs/data/photo_feature_packets.jsonl docs/data/photo_scored.jsonl docs/data/sekula_index_enriched.csv
+          
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update photo likelihood scores [workflow run ${{ github.run_number }}]"
+            git push
+          fi
