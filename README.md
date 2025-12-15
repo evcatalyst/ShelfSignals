@@ -37,6 +37,12 @@ collection-neutral and adaptable to future datasets.
 - **Export & Reporting**  
   Configurable output formats (CSV, JSON, Markdown reports, visual dashboards).
 
+- **Deep Facets**  
+  Probabilistic content detection using AI-powered metadata analysis:
+  - **Embedded Photography Likelihood**: Estimates the probability that books contain photographic inserts or plates, even when not categorized as photography books
+  - Conservative, metadata-driven scoring using xAI (Grok) API
+  - Toggleable visual overlays and filtering in web interfaces
+
 ---
 
 ## Goals
@@ -107,9 +113,13 @@ ShelfSignals/
 │       ├── sekula_inventory.json   # CSV-compatible format
 │       ├── sekula_index.json       # Primo API JSON format
 │       └── sekula_index.csv        # CSV export
-├── scripts/                        # Data collection tools
+├── scripts/                        # Data collection & analysis tools
 │   ├── sekula_indexer.py           # Primo API harvester
-│   └── facet_scout.py              # Facet analysis utility
+│   ├── facet_scout.py              # Facet analysis utility
+│   ├── photo_feature_extractor.py  # Photo likelihood feature extraction
+│   ├── photo_likelihood_scorer.py  # Grok API scoring pipeline
+│   ├── merge_scores_to_json.py     # Merge scores into JSON data
+│   └── merge_scores_to_csv.py      # Export enriched CSV
 ├── README.md                       # This file
 ├── CODEX_INSTRUCTIONS.md           # LLM assistant guidelines
 └── COPILOT_INSTRUCTIONS.md         # Copilot behavior guidelines
@@ -147,5 +157,28 @@ The Allan Sekula Library serves as the prototype collection because its thematic
 ### Migration Path
 
 Features proven in the preview environment will be selectively promoted to production. The modular JavaScript utilities (`signals.js`, `lc.js`, `colors.js`, `search.js`, `year.js`) represent reusable components that can be integrated into future analysis tools beyond the web interface.
+
+---
+
+## Deep Facets
+
+ShelfSignals includes **Deep Facets**: AI-powered probabilistic content detection that reveals latent patterns in collections beyond traditional cataloging.
+
+### Embedded Photography Likelihood
+
+A probabilistic facet that estimates the likelihood (0–100) that books contain actual photographic inserts or plates, even when not categorized as photography books.
+
+**Key Features**:
+- **Conservative scoring**: High scores (>70) require converging signals from multiple metadata fields
+- **Token-efficient**: Compact feature packets extracted from metadata
+- **Stable & deterministic**: Consistent scores across runs for the same prompt version
+- **Automated pipeline**: GitHub Actions workflow for collection-wide scoring
+- **Visual integration**: Toggleable overlay with color-coded likelihood tints
+
+**Documentation**: See [docs/PHOTO_LIKELIHOOD_FACET.md](docs/PHOTO_LIKELIHOOD_FACET.md) for full implementation details.
+
+**Try it**:
+- [Production interface](https://evcatalyst.github.io/ShelfSignals/) - Toggle "📷 Embedded Photography" in header controls
+- [Preview interface](https://evcatalyst.github.io/ShelfSignals/preview/) - Same feature with enhanced accessibility
 
 

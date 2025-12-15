@@ -333,7 +333,7 @@ def build_feature_packet(record: Dict) -> Dict:
     year = None
     decade = None
     if year_str:
-        # Try to extract 4-digit year
+        # Try to extract 4-digit year (range 1600-2029 covers historical library collections)
         match = re.search(r"\b(1[6-9]\d{2}|20[0-2]\d)\b", year_str)
         if match:
             year = int(match.group(1))

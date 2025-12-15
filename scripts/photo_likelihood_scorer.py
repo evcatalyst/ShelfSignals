@@ -158,7 +158,7 @@ def call_grok_api(
                                 "content": prompt
                             }
                         ],
-                        "temperature": 0.3,  # Low temperature for consistency
+                        "temperature": 0.3,  # Low temperature (0.3) for consistent, conservative scoring
                     },
                     timeout=30,
                 )
@@ -200,7 +200,7 @@ def call_grok_api(
                     results.append({
                         "id": packet["id"],
                         "likelihood": 20,  # Conservative fallback
-                        "reasoning": "Unable to score due to API error; conservative default applied.",
+                        "reasoning": "Unable to score due to API error, conservative default applied.",
                     })
         
         # Small delay between requests to be respectful
