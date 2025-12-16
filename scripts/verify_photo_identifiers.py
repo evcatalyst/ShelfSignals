@@ -112,6 +112,10 @@ def verify_sekula_index_merging(scored_records):
         for record in index_records:
             record_id = record.get("id")
             
+            if not record_id:
+                print_warn(f"Record at position has no id field")
+                continue
+            
             if "photo_insert_score" in record:
                 records_with_scores += 1
                 
