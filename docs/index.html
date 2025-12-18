@@ -105,7 +105,7 @@
       grid-template-columns: 260px minmax(0, 2.2fr) minmax(280px, 1.3fr);
       gap: 1rem;
       padding: 1rem 1.5rem 1.5rem;
-      max-width: 1600px;
+      max-width: 1920px;
       margin: 0 auto;
       width: 100%;
     }
@@ -115,7 +115,16 @@
     }
 
     main.layout[data-panel="hidden"] aside.detail {
-      display: none;
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      border: 0;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+      pointer-events: none;
     }
 
     @media (max-width: 960px) {
@@ -758,6 +767,10 @@
       gap: 0.35rem;
     }
 
+    .insight-stat.clickable {
+      cursor: pointer;
+    }
+
     /* Loading overlay */
     .loading-overlay {
       position: fixed;
@@ -906,7 +919,7 @@
       <p>Production v1.x – Stable Interface <span style="margin-left:0.5rem;">·</span> <a href="preview/" style="color:var(--accent);text-decoration:none;">Try Preview v2.x →</a></p>
     </div>
     <div class="header-controls">
-      <div class="layout-switch" aria-label="Toggle right panel layout">
+      <div class="layout-switch">
         <span class="label">Panel</span>
         <div class="chip-row">
           <button class="chip-button" type="button" data-panel-target="details" data-active="true">Details</button>
@@ -1135,15 +1148,7 @@
       <div id="shelfRows" class="shelf-rows"></div>
     </section>
 
-    <aside class="detail">
-      <div class="panel-toggle-row">
-        <div class="muted" style="font-size:0.82rem;">Right panel</div>
-        <div class="chip-row">
-          <button class="chip-button" type="button" data-panel-target="details" data-active="true">Details</button>
-          <button class="chip-button" type="button" data-panel-target="insights">Insights</button>
-          <button class="chip-button" type="button" data-panel-target="hidden">Hide</button>
-        </div>
-      </div>
+    <aside class="detail" aria-live="polite">
       <div id="detailPanel">
         <h2>Details</h2>
         <div id="detailIntro" class="muted" style="font-size:0.8rem;">
@@ -1172,6 +1177,7 @@
       "art",
       "theory"
     ]);
+    let insightsRendering = false;
     let inventory = [];
     let selectedBook = null;
     let selectedCluster = null;
@@ -1363,12 +1369,20 @@
 
     function setPanelMode(mode) {
       const layout = document.querySelector("main.layout");
-      panelMode = ["details", "insights", "hidden"].includes(mode) ? mode : "details";
+      const validModes = ["details", "insights", "hidden"];
+      if (!validModes.includes(mode)) {
+        console.warn(`setPanelMode: Invalid mode "${mode}". Falling back to "details". Valid modes are: ${validModes.join(", ")}.`);
+        panelMode = "details";
+      } else {
+        panelMode = mode;
+      }
       if (layout) layout.dataset.panel = panelMode;
       const detailPanel = document.getElementById("detailPanel");
       const insightsPanel = document.getElementById("insightsPanel");
       if (detailPanel) detailPanel.style.display = panelMode === "details" ? "block" : "none";
       if (insightsPanel) insightsPanel.style.display = panelMode === "insights" ? "block" : "none";
+      const aside = document.querySelector("aside.detail");
+      if (aside) aside.setAttribute("aria-hidden", panelMode === "hidden" ? "true" : "false");
       if (panelMode === "insights") renderInsightsPanel();
       updatePanelButtons();
     }
@@ -1741,8 +1755,13 @@
     }
 
     function renderInsightsPanel() {
+      if (insightsRendering) return;
+      insightsRendering = true;
       const container = document.getElementById("insightsBody");
-      if (!container) return;
+      if (!container) {
+        insightsRendering = false;
+        return;
+      }
       const items = getFilteredItems();
       container.innerHTML = "";
 
@@ -1784,7 +1803,8 @@
       resetBtn.className = "chip-button full";
       resetBtn.textContent = "Show all signals";
       resetBtn.addEventListener("click", () => {
-        activeThemes = new Set(themeOrder);
+        activeThemes.clear();
+        themeOrder.forEach(t => activeThemes.add(t));
         syncThemeCheckboxes();
         renderShelfRows();
         renderInsightsPanel();
@@ -1801,7 +1821,7 @@
       const topLocs = buildLocationOverviewData(items).slice(0, 4);
       topLocs.forEach(loc => {
         const row = document.createElement("div");
-        row.className = "insight-stat";
+        row.className = "insight-stat clickable";
         row.textContent = `${loc.loc}`;
         const count = document.createElement("span");
         count.className = "muted";
@@ -1819,6 +1839,7 @@
       grid.appendChild(locationCard);
 
       container.appendChild(grid);
+      insightsRendering = false;
     }
 
     function renderLocationOverview(filteredItems) {

@@ -86,7 +86,16 @@
     }
 
     main.layout.compact .detail {
-      display: none;
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      border: 0;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+      pointer-events: none;
     }
 
     @media (max-width: 960px) {
@@ -164,7 +173,7 @@
     .chip-button {
       border: 1px solid var(--border);
       background: var(--surface-alt);
-      border-radius: 0.4rem;
+      border-radius: 999px;
       padding: 0.25rem 0.5rem;
       font-size: 0.85rem;
       cursor: pointer;
@@ -196,7 +205,7 @@
     .signal-chip-button {
       border: 1px solid var(--border);
       background: var(--surface);
-      border-radius: 0.4rem;
+      border-radius: 999px;
       padding: 0.2rem 0.45rem;
       font-size: 0.8rem;
       cursor: pointer;
@@ -1239,9 +1248,9 @@
       </div>
     </section>
 
-    <aside class="detail">
+    <aside class="detail" aria-live="polite">
       <div class="detail-header">
-        <h2 style="margin:0;">Insights Panel</h2>
+        <h2 style="margin:0;">Right panel</h2>
         <div class="detail-tabs">
           <button id="tabDetails" class="chip-button" data-mode="details">Details</button>
           <button id="tabInsights" class="chip-button" data-mode="insights">Analytics</button>
@@ -1250,7 +1259,7 @@
         </div>
       </div>
       <div id="detailIntro" class="muted" style="font-size:0.85rem;">
-        Click on a spine to see details, or open Analytics / Signal Finder to reclaim space.
+        Click on a spine to see details. Use Hide Panel to reclaim space, and switch to Analytics or Signal Finder to change the insights view.
       </div>
       <div id="detailBody" class="detail-body"></div>
     </aside>
@@ -1272,8 +1281,7 @@
     const activeSignals = new Set(SIGNAL_IDS);
     let colorMode = 'signals';
     let activePalette = getActivePalette();
-    let panelMode = 'details';
-    let panelCollapsed = false;
+    let panelMode = 'details'; // details | insights | finder | hidden
     const SIGNAL_META_MAP = new Map(SIGNALS.map(s => [s.id, s]));
     const MAX_SAMPLE_POOL_SIZE = 200;
     const MAX_SAMPLE_TITLES = 10;
@@ -2015,6 +2023,7 @@
 
     // Render detail panel
     function renderDetailPanel() {
+      if (panelMode === 'hidden') return;
       if (panelMode === 'insights') {
         return renderInsightsPanel();
       }
@@ -2254,24 +2263,33 @@
       if (tabInsights) tabInsights.dataset.active = panelMode === 'insights';
       if (tabFinder) tabFinder.dataset.active = panelMode === 'finder';
       if (collapsePanel) {
-        collapsePanel.textContent = panelCollapsed ? 'Show Panel' : 'Hide Panel';
-        collapsePanel.setAttribute('aria-label', panelCollapsed ? 'Show side panel' : 'Hide side panel');
+        const isHidden = panelMode === 'hidden';
+        collapsePanel.textContent = isHidden ? 'Show Panel' : 'Hide Panel';
+        collapsePanel.setAttribute('aria-label', isHidden ? 'Show side panel' : 'Hide side panel');
       }
     }
 
     function setPanelMode(mode) {
-      panelMode = mode;
-      updatePanelControls();
-      renderDetailPanel();
-    }
-
-    function togglePanelCollapse() {
-      panelCollapsed = !panelCollapsed;
       const layout = document.querySelector('main.layout');
+      const validModes = ['details', 'insights', 'finder', 'hidden'];
+      if (!validModes.includes(mode)) {
+        console.warn(`setPanelMode: Invalid mode "${mode}". Falling back to "details". Valid modes are: ${validModes.join(', ')}.`);
+        panelMode = 'details';
+      } else {
+        panelMode = mode;
+      }
+      const isHidden = panelMode === 'hidden';
       if (layout) {
-        layout.classList.toggle('compact', panelCollapsed);
+        layout.classList.toggle('compact', isHidden);
+      }
+      const detail = document.querySelector('aside.detail');
+      if (detail) {
+        detail.setAttribute('aria-hidden', isHidden ? 'true' : 'false');
       }
       updatePanelControls();
+      if (!isHidden) {
+        renderDetailPanel();
+      }
     }
 
     function renderInsightsPanel() {
@@ -2377,14 +2395,20 @@
         btn.className = 'signal-chip-button';
         const count = signalCounts.get(sig.id) || 0;
         btn.textContent = `${sig.label}${count ? ` · ${count}` : ''}`;
+        btn.dataset.signalId = sig.id;
         btn.dataset.active = activeSignals.has(sig.id);
-        btn.addEventListener('click', () => {
-          activeSignals.clear();
-          activeSignals.add(sig.id);
-          renderShelfView();
-          setPanelMode('details');
-        });
         chips.appendChild(btn);
+      });
+
+      chips.addEventListener('click', (event) => {
+        const button = event.target.closest('.signal-chip-button');
+        if (!button || !chips.contains(button)) return;
+        const signalId = button.dataset.signalId;
+        if (!signalId) return;
+        activeSignals.clear();
+        activeSignals.add(signalId);
+        renderShelfView();
+        setPanelMode('details');
       });
 
       const reset = document.createElement('button');
@@ -2640,13 +2664,15 @@
       const tabFinder = document.getElementById('tabFinder');
       const collapsePanel = document.getElementById('collapsePanel');
 
-      collapsePanel.addEventListener('click', () => {
-        togglePanelCollapse();
-      });
+      if (collapsePanel) {
+        collapsePanel.addEventListener('click', () => {
+          setPanelMode(panelMode === 'hidden' ? 'details' : 'hidden');
+        });
+      }
 
-      tabDetails.addEventListener('click', () => setPanelMode('details'));
-      tabInsights.addEventListener('click', () => setPanelMode('insights'));
-      tabFinder.addEventListener('click', () => setPanelMode('finder'));
+      if (tabDetails) tabDetails.addEventListener('click', () => setPanelMode('details'));
+      if (tabInsights) tabInsights.addEventListener('click', () => setPanelMode('insights'));
+      if (tabFinder) tabFinder.addEventListener('click', () => setPanelMode('finder'));
 
       updatePanelControls();
     }
