@@ -14,6 +14,7 @@
       --chip-bg: #e0e7f5;
       --surface: #ffffff;
       --surface-muted: #f5f7fb;
+      --layout-max: 1920px;
     }
 
     * { box-sizing: border-box; }
@@ -105,7 +106,7 @@
       grid-template-columns: 260px minmax(0, 2.2fr) minmax(280px, 1.3fr);
       gap: 1rem;
       padding: 1rem 1.5rem 1.5rem;
-      max-width: 1920px;
+      max-width: var(--layout-max, 1920px);
       margin: 0 auto;
       width: 100%;
     }
@@ -231,6 +232,10 @@
       justify-content: space-between;
       margin-bottom: 0.25rem;
       font-size: 0.9rem;
+    }
+
+    .insight-stat.clickable {
+      cursor: pointer;
     }
 
     .insight-pills {
@@ -924,7 +929,7 @@
         <div class="chip-row">
           <button class="chip-button" type="button" data-panel-target="details" data-active="true">Details</button>
           <button class="chip-button" type="button" data-panel-target="insights">Insights</button>
-          <button class="chip-button" type="button" data-panel-target="hidden">Hide</button>
+          <button class="chip-button" type="button" data-panel-target="hidden" aria-label="Hide side panel">Hide</button>
         </div>
       </div>
       <button id="openAbout" class="icon-button" title="About ShelfSignals">ℹ️</button>
@@ -1177,7 +1182,9 @@
       "art",
       "theory"
     ]);
+    let insightsDirty = false;
     let insightsRendering = false;
+    let insightsRenderQueued = false;
     let inventory = [];
     let selectedBook = null;
     let selectedCluster = null;
@@ -1369,6 +1376,9 @@
 
     function setPanelMode(mode) {
       const layout = document.querySelector("main.layout");
+      if (mode === "finder") {
+        mode = "insights";
+      }
       const validModes = ["details", "insights", "hidden"];
       if (!validModes.includes(mode)) {
         console.warn(`setPanelMode: Invalid mode "${mode}". Falling back to "details". Valid modes are: ${validModes.join(", ")}.`);
@@ -1376,15 +1386,37 @@
       } else {
         panelMode = mode;
       }
+      const isHidden = panelMode === "hidden";
       if (layout) layout.dataset.panel = panelMode;
       const detailPanel = document.getElementById("detailPanel");
       const insightsPanel = document.getElementById("insightsPanel");
-      if (detailPanel) detailPanel.style.display = panelMode === "details" ? "block" : "none";
-      if (insightsPanel) insightsPanel.style.display = panelMode === "insights" ? "block" : "none";
+      if (detailPanel) detailPanel.style.display = panelMode === "insights" ? "none" : "block";
+      if (insightsPanel) insightsPanel.style.display = panelMode === "details" ? "none" : "block";
       const aside = document.querySelector("aside.detail");
-      if (aside) aside.setAttribute("aria-hidden", panelMode === "hidden" ? "true" : "false");
-      if (panelMode === "insights") renderInsightsPanel();
+      if (aside) aside.setAttribute("aria-hidden", isHidden ? "true" : "false");
+      if (panelMode === "insights") {
+        insightsDirty = false;
+        renderInsightsPanel();
+      }
       updatePanelButtons();
+    }
+
+    function queueRenderInsightsPanel() {
+      if (panelMode !== "insights") {
+        insightsDirty = true;
+        return;
+      }
+      if (insightsRendering) {
+        insightsDirty = true;
+        return;
+      }
+      if (insightsRenderQueued) return;
+      insightsRenderQueued = true;
+      requestAnimationFrame(() => {
+        insightsRenderQueued = false;
+        insightsDirty = false;
+        renderInsightsPanel();
+      });
     }
 
     function syncThemeCheckboxes() {
@@ -1755,15 +1787,16 @@
     }
 
     function renderInsightsPanel() {
+      insightsDirty = false;
       if (insightsRendering) return;
       insightsRendering = true;
-      const container = document.getElementById("insightsBody");
-      if (!container) {
-        insightsRendering = false;
-        return;
-      }
-      const items = getFilteredItems();
-      container.innerHTML = "";
+      try {
+        const container = document.getElementById("insightsBody");
+        if (!container) {
+          return;
+        }
+        const items = getFilteredItems();
+        container.innerHTML = "";
 
       const summary = document.createElement("div");
       summary.className = "book-meta";
@@ -1793,8 +1826,8 @@
           activeThemes.clear();
           activeThemes.add(entry.theme);
           syncThemeCheckboxes();
-          renderShelfRows();
-          renderInsightsPanel();
+          renderShelfRows({ skipInsightsRender: true });
+          queueRenderInsightsPanel();
         });
         themeWrap.appendChild(btn);
       });
@@ -1806,8 +1839,8 @@
         activeThemes.clear();
         themeOrder.forEach(t => activeThemes.add(t));
         syncThemeCheckboxes();
-        renderShelfRows();
-        renderInsightsPanel();
+        renderShelfRows({ skipInsightsRender: true });
+        queueRenderInsightsPanel();
       });
       themeWrap.appendChild(resetBtn);
       themeCard.appendChild(themeWrap);
@@ -1831,15 +1864,20 @@
           locationFilter.clear();
           locationFilter.add(loc.loc);
           renderLocationChips();
-          renderShelfRows();
-          renderInsightsPanel();
+          renderShelfRows({ skipInsightsRender: true });
+          queueRenderInsightsPanel();
         });
         locationCard.appendChild(row);
       });
       grid.appendChild(locationCard);
 
-      container.appendChild(grid);
-      insightsRendering = false;
+        container.appendChild(grid);
+      } finally {
+        insightsRendering = false;
+        if (insightsDirty) {
+          queueRenderInsightsPanel();
+        }
+      }
     }
 
     function renderLocationOverview(filteredItems) {
@@ -2141,7 +2179,8 @@
       return result;
     }
 
-    function renderShelfRows() {
+    function renderShelfRows(options = {}) {
+      const { skipInsightsRender = false } = options;
       const container = document.getElementById("shelfRows");
       const summary = document.getElementById("shelfSummary");
       container.innerHTML = "";
@@ -2301,8 +2340,8 @@
         container.appendChild(section);
       }
 
-      if (panelMode === "insights") {
-        renderInsightsPanel();
+      if (panelMode === "insights" && !skipInsightsRender) {
+        queueRenderInsightsPanel();
       }
       renderClusterMap(filtered);
     }
