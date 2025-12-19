@@ -1,0 +1,86 @@
+{
+  "schema": "shelfsignals-curated-paths@1",
+  "version": "1.0.0",
+  "paths": [
+    {
+      "id": "labor-images",
+      "title": "Labor & Images",
+      "subtitle": "Visual documentation of work, industry, and class struggle",
+      "narrative": "This path explores how photography and visual media document labor, working conditions, and social movements. From factory floors to union halls, these works reveal the intersection of image-making and working-class consciousness.",
+      "signals": ["labor", "image"],
+      "suggestedClasses": ["TR", "HD", "HN"],
+      "colorMode": "signals",
+      "icon": "⚙️📷"
+    },
+    {
+      "id": "maritime-globalization",
+      "title": "Maritime Globalization",
+      "subtitle": "Oceans, ports, and the global circulation of capital",
+      "narrative": "Follow the cargo containers and shipping routes that structure global capitalism. This collection examines ports, harbors, and maritime culture as sites where economic history, labor, and geopolitics converge.",
+      "signals": ["sea", "capital", "cities"],
+      "suggestedClasses": ["HE", "G", "VM"],
+      "colorMode": "signals",
+      "icon": "🚢🌊"
+    },
+    {
+      "id": "borders-migration",
+      "title": "Borders & Migration",
+      "subtitle": "Movement, displacement, and the politics of citizenship",
+      "narrative": "This path traces narratives of migration, displacement, and border crossings. These works examine how states regulate movement, how communities form across borders, and how photography documents the human experience of migration.",
+      "signals": ["borders", "war", "cities"],
+      "suggestedClasses": ["JV", "HV", "E"],
+      "colorMode": "signals",
+      "icon": "🌍✈️"
+    },
+    {
+      "id": "archives-museums",
+      "title": "Archives & Museums",
+      "subtitle": "Institutional memory, collecting practices, and cultural authority",
+      "narrative": "Explore the institutions that preserve and present visual culture. These works critically examine how museums, archives, and libraries shape collective memory, establish canons, and exercise cultural power.",
+      "signals": ["archives", "art", "theory"],
+      "suggestedClasses": ["AM", "N", "Z"],
+      "colorMode": "signals",
+      "icon": "🏛️📚"
+    },
+    {
+      "id": "cities-logistics",
+      "title": "Cities & Logistics",
+      "subtitle": "Urban infrastructure, transportation networks, and spatial politics",
+      "narrative": "Investigate the built environment and the systems that move goods and people through metropolitan space. From highways to rail yards, these works reveal how infrastructure shapes urban life and capital accumulation.",
+      "signals": ["cities", "sea", "capital"],
+      "suggestedClasses": ["HE", "NA", "HT"],
+      "colorMode": "signals",
+      "icon": "🏙️🚛"
+    },
+    {
+      "id": "theory-method",
+      "title": "Theory & Method",
+      "subtitle": "Critical frameworks for understanding image, culture, and history",
+      "narrative": "This path gathers theoretical and methodological works that inform visual studies, critical geography, and cultural analysis. These texts provide conceptual tools for interpreting photography, media, and social space.",
+      "signals": ["theory", "art", "image"],
+      "suggestedClasses": ["B", "P", "TR"],
+      "colorMode": "signals",
+      "icon": "💭📖"
+    },
+    {
+      "id": "documentary-practice",
+      "title": "Documentary Practice",
+      "subtitle": "Truth claims, representation, and the documentary tradition",
+      "narrative": "Examine the history and theory of documentary photography and film. These works question how documentary forms construct reality, claim authenticity, and intervene in social and political discourse.",
+      "signals": ["image", "art", "theory"],
+      "suggestedClasses": ["TR", "PN", "P"],
+      "colorMode": "signals",
+      "icon": "📹🎬"
+    },
+    {
+      "id": "industrial-capital",
+      "title": "Industrial Capital",
+      "subtitle": "Production, accumulation, and the political economy of images",
+      "narrative": "This path connects industrial history with visual representation, examining how capitalism structures both production and image-making. From factory photography to theories of commodity culture, these works reveal the material basis of visual culture.",
+      "signals": ["capital", "labor", "image"],
+      "suggestedClasses": ["HC", "HD", "TR"],
+      "colorMode": "signals",
+      "icon": "🏭💰"
+    }
+  ]
+}
