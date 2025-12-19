@@ -200,7 +200,7 @@ export function downloadReceipt(receipt, filename = null) {
 /**
  * Copy receipt as formatted text
  */
-export function copyReceiptText(receipt) {
+export async function copyReceiptText(receipt) {
   const text = `ShelfSignals Digital Receipt
 Receipt ID: ${receipt.receiptId}
 Mode: ${receipt.mode}

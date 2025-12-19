@@ -1369,8 +1369,8 @@
       
       // Setup actions
       document.getElementById('downloadReceiptBtn').onclick = () => downloadReceipt(receipt);
-      document.getElementById('copyReceiptBtn').onclick = () => {
-        copyReceiptText(receipt);
+      document.getElementById('copyReceiptBtn').onclick = async () => {
+        await copyReceiptText(receipt);
         showNotification('Receipt copied to clipboard');
       };
       document.getElementById('showQRBtn').onclick = async () => {
