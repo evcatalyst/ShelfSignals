@@ -1,27 +1,113 @@
 # ShelfSignals
 
-> **Quick Start**: New to ShelfSignals? Read the [**Introduction & User Guide**](INTRODUCTION.md) for a visual walkthrough with screenshots and use cases.
+**Collection intelligence framework** that reveals hidden patterns in library and archive metadata through visual analytics, AI-powered deep facets, and reproducible data pipelines.
 
-ShelfSignals is a system-agnostic analytics framework for extracting structure,
-patterns, and insights from collection inventories. It is designed for research
-libraries, archives, and any environment where catalog metadata and numbering
-systems contain implicit signals about provenance, organization, or workflow
-history.
-
-ShelfSignals ingests catalog records, normalizes metadata, and uses configurable
-analysis modules to detect patterns in numbering sequences, item groupings,
-descriptive fields, and other latent structures. The project is entirely
-collection-neutral and adaptable to future datasets.
+> **Start Here**: New users should read the [**Introduction & User Guide**](INTRODUCTION.md) for a visual walkthrough, or jump to the [**📚 Complete Documentation**](docs/index.md).
 
 ---
 
-## Quick Links
+## What is ShelfSignals?
 
-- 📖 [**Introduction & User Guide**](INTRODUCTION.md) - Visual walkthrough with screenshots and use cases
-- 🌐 [**Live Preview Interface**](https://evcatalyst.github.io/ShelfSignals/preview/) - Recommended interface
-- 🎭 [**Exhibit Interface**](https://evcatalyst.github.io/ShelfSignals/preview/exhibit/) - Museum-ready installation
-- 📸 [**Deep Facets Documentation**](docs/PHOTO_LIKELIHOOD_FACET.md) - AI-powered content detection
-- 💻 [**GitHub Repository**](https://github.com/evcatalyst/ShelfSignals) - Source code and issues
+ShelfSignals transforms catalog metadata into interactive visualizations that expose the implicit knowledge encoded in:
+- **Classification systems** (LC call numbers, subject headings)
+- **Numbering sequences** (accession patterns, shelf arrangement)
+- **Thematic signals** (photography, labor, maritime, critical theory)
+- **Deep facets** (AI-powered content detection)
+
+The framework is **source-agnostic** and **collection-neutral**—adapt it to any institution's catalog (Primo, OCLC, ArchivesSpace, CSV exports).
+
+---
+
+## Quick Start
+
+### 🌐 Try it Live
+- [**Preview Interface**](https://evcatalyst.github.io/ShelfSignals/preview/) - Explore the virtual shelf (recommended)
+- [**Exhibit Interface**](https://evcatalyst.github.io/ShelfSignals/preview/exhibit/) - Museum-ready with curated paths
+
+### 💻 Run Locally
+```bash
+# Clone and serve
+git clone https://github.com/evcatalyst/ShelfSignals.git
+cd ShelfSignals/docs
+python -m http.server 8000
+# Open http://localhost:8000/preview/
+```
+
+### 🔧 Run the Pipeline
+```bash
+# Harvest catalog data
+python scripts/sekula_indexer.py
+
+# Extract AI features
+python scripts/photo_feature_extractor.py \
+  --input docs/data/sekula_index.json \
+  --output docs/data/photo_feature_packets.jsonl
+
+# Score with AI (mock mode)
+python scripts/photo_likelihood_scorer.py \
+  --input docs/data/photo_feature_packets.jsonl \
+  --output docs/data/photo_scored.jsonl \
+  --mock
+
+# Merge scores and export
+python scripts/merge_scores_to_json.py \
+  --input docs/data/sekula_index.json \
+  --scores docs/data/photo_scored.jsonl \
+  --output docs/data/sekula_index.json
+```
+
+See [**docs/operations.md**](docs/operations.md) for complete pipeline documentation.
+
+---
+
+## Documentation
+
+### 📚 Core Documentation
+- **[docs/index.md](docs/index.md)** - Overview, concepts, use cases, and navigation map
+- **[docs/pipeline.md](docs/pipeline.md)** - Data model, normalization, AI enrichment, reproducibility
+- **[docs/interfaces.md](docs/interfaces.md)** - Production/Preview/Exhibit interface documentation
+- **[docs/receipts.md](docs/receipts.md)** - Digital Receipt system for portable, verifiable exports
+- **[docs/operations.md](docs/operations.md)** - Running locally, scheduling, storage layout, export formats
+
+### 📖 Getting Started Guides
+- **[INTRODUCTION.md](INTRODUCTION.md)** - Visual user guide with screenshots and workflows
+- **[docs/PHOTO_LIKELIHOOD_FACET.md](docs/PHOTO_LIKELIHOOD_FACET.md)** - AI-powered deep facets implementation
+
+### 🎯 Quick Navigation
+- **What problem does this solve?** → [docs/index.md](docs/index.md#what-problems-does-shelfsignals-solve)
+- **How does data flow through the pipeline?** → [docs/pipeline.md](docs/pipeline.md)
+- **How do I run the interfaces?** → [docs/interfaces.md](docs/interfaces.md) or [docs/operations.md](docs/operations.md#running-locally)
+- **How do receipts work?** → [docs/receipts.md](docs/receipts.md)
+- **How do I adapt this to my collection?** → [docs/operations.md](docs/operations.md#adapting-to-new-collections)
+
+---
+
+## Features
+
+### 🔍 Core Capabilities
+- **Metadata Harvesting**: API connectors (Primo, OCLC), CSV imports, HTML/DOM extraction
+- **Normalization Layer**: LC parsing, publisher canonicalization, year normalization, subject cleanup
+- **Pattern Detection**: Sequence analysis, signal matching, classification clustering
+- **Visual Intelligence**: Virtual shelf, LC coloring, thematic overlays, interactive exploration
+- **AI Deep Facets**: Embedded Photography Likelihood scorer (xAI Grok API)
+
+### 🎨 Three Specialized Interfaces
+| Interface | Status | Best For |
+|-----------|--------|----------|
+| [**Production**](https://evcatalyst.github.io/ShelfSignals/) | Deprecated (v1.x) | Legacy compatibility |
+| [**Preview**](https://evcatalyst.github.io/ShelfSignals/preview/) | ✅ Active (v2.x) | Research, accessibility |
+| [**Exhibit**](https://evcatalyst.github.io/ShelfSignals/preview/exhibit/) | ✅ Active (v2.x) | Museums, kiosks, public engagement |
+
+See [**docs/interfaces.md**](docs/interfaces.md) for detailed comparison.
+
+### 🎫 Digital Receipts
+**Portable, verifiable exports** of curated collections:
+- RFC 8785 canonical JSON + SHA-256 verification
+- No server storage (fully client-side)
+- Shareable via JSON download, QR code, or URL fragment
+- Human-readable IDs: `SS-XXXX-XXXX-XXXX`
+
+See [**docs/receipts.md**](docs/receipts.md) for complete documentation.
 
 ---
 
@@ -29,148 +115,9 @@ collection-neutral and adaptable to future datasets.
 
 ### Preview Interface
 ![ShelfSignals Preview Interface](docs/images/preview-interface.png)
-*The Preview interface displaying the virtual shelf with LC classification-based coloring, real-time search, and interactive book spines*
+*Virtual shelf with LC classification coloring, real-time search, and interactive book spines*
 
-The Preview interface showcases the virtual shelf visualization with:
-- Real-time search and filtering
-- Color-coded LC classification
-- Interactive book spines with detailed metadata
-- Enhanced accessibility features
-
-*For more screenshots and visual examples, see the [Introduction & User Guide](INTRODUCTION.md).*
-
----
-
-## Features
-
-- **Metadata Harvesting**  
-  Connectors for scraping, exporting, or ingesting catalog data (API, CSV,
-  HTML/DOM extraction, etc.).
-
-- **Normalization Layer**  
-  Standardizes fields, numbering systems, identifiers, and formats across
-  heterogeneous sources.
-
-- **Pattern Analysis Engine**  
-  Modules for:
-  - sequence detection  
-  - call number pattern clustering  
-  - accession/cutter analysis  
-  - temporal or spatial grouping  
-  - anomaly detection  
-
-- **Visualization Tools**  
-  Heatmaps, sequence plots, cluster maps, and lineage timelines.
-
-- **Export & Reporting**  
-  Configurable output formats (CSV, JSON, Markdown reports, visual dashboards).
-
-- **Deep Facets**  
-  Probabilistic content detection using AI-powered metadata analysis:
-  - **Embedded Photography Likelihood**: Estimates the probability that books contain photographic inserts or plates, even when not categorized as photography books
-  - Conservative, metadata-driven scoring using xAI (Grok) API
-  - Toggleable visual overlays and filtering in web interfaces
-
----
-
-## Goals
-
-ShelfSignals aims to:
-
-1. Reveal hidden organizational structure in collection metadata.  
-2. Identify sequential numbering patterns and anomalies.  
-3. Provide a reusable toolkit for ongoing research and cross-collection studies.  
-4. Support data preparation for external reporting or downstream machine-learning tasks.
-
----
-
-## Web Interfaces
-
-ShelfSignals provides two web interfaces for exploring the Sekula Library collection:
-
-### Production Site (`/`)
-- **Location**: `docs/index.html`
-- **Data Source**: `docs/data/sekula_inventory.json` (CSV-compatible format)
-- **Status**: ⚠️ **Deprecated** - Known performance issues and freezing. Please use Preview v2.x
-- **Access URL**: https://evcatalyst.github.io/ShelfSignals/
-- **Direct link**: [Production Site](https://evcatalyst.github.io/ShelfSignals/)
-
-⚠️ **Note**: This v1.x interface has known performance issues. Users are redirected to the Preview v2.x environment for the best experience.
-
-### Preview Environment (`/preview/`)
-- **Location**: `docs/preview/index.html`
-- **Data Source**: `docs/data/sekula_index.json` (JSON-native format from Primo API)
-- **Status**: Experimental, modular architecture
-- **Access URL**: https://evcatalyst.github.io/ShelfSignals/preview/
-- **Direct link**: [Preview Environment](https://evcatalyst.github.io/ShelfSignals/preview/)
-
-The preview environment showcases a modernized, modular architecture with:
-- **Modular JavaScript utilities** in `docs/js/`:
-  - `signals.js` - Centralized signals (theme) registry and keyword matching
-  - `lc.js` - LC call-number parser extracting class, number, and sorting keys
-  - `colors.js` - Unified color logic with colorblind-friendly palettes and localStorage persistence
-  - `search.js` - Debounced search state with match computation across multiple fields
-  - `year.js` - Year normalization utility for messy date strings
-  - `receipt.js` - Digital Receipt system for portable, verifiable data export
-- **Enhanced features**:
-  - JSON-based data loading from Primo API harvests
-  - Improved accessibility (ARIA roles, keyboard navigation, focus management)
-  - Search highlighting and explicit empty states
-  - Enhanced detail panel with LC ranges, signal counts, and catalog links
-  - Color palette selector with accessibility options
-  - Real-time search with match counts and field-level feedback
-
-The preview environment serves as a testing ground for new features before they are promoted to production.
-
-### Exhibit/Studio Environment (`/preview/exhibit/`)
-- **Location**: `docs/preview/exhibit/index.html`
-- **Data Source**: `docs/data/sekula_index.json` (same as Preview)
-- **Status**: ✨ **New** - Museum-ready interface for exhibitions and public installations
-- **Access URL**: https://evcatalyst.github.io/ShelfSignals/preview/exhibit/
-- **Direct link**: [Exhibit Environment](https://evcatalyst.github.io/ShelfSignals/preview/exhibit/)
-- **Kiosk Mode**: Add `?kiosk=1` for fullscreen exhibition installations
-
-The Exhibit environment provides a parallel UI shell with a focus on public-facing exhibitions:
-
-**Design Philosophy**:
-- **Jony Ive aesthetic**: Minimal, calm interface with strong hierarchy and whitespace
-- **Fast & focused**: Progressive disclosure with 3 primary actions front and center
-- **Portable & verifiable**: Digital Receipt system for taking home curated collections
-
-**Key Features**:
-- **8 Curated Paths** (`docs/preview/exhibit/curated-paths.json`):
-  - Labor & Images ⚙️📷
-  - Maritime Globalization 🚢🌊
-  - Borders & Migration 🌍✈️
-  - Archives & Museums 🏛️📚
-  - Cities & Logistics 🏙️🚛
-  - Theory & Method 💭📖
-  - Documentary Practice 📹🎬
-  - Industrial Capital 🏭💰
-  
-- **Digital Receipt System**:
-  - Export/import shelf configurations without server storage
-  - RFC 8785 (JCS) canonical JSON + SHA-256 verification
-  - Shareable via download, QR code, or URL fragment
-  - Human-readable receipt IDs: `SS-XXXX-XXXX-XXXX`
-  
-- **Kiosk Mode** (`?kiosk=1`):
-  - Large typography (3.5rem headings) for readability
-  - High-contrast colors for exhibition lighting
-  - Inactivity timer resets to attract screen (2 min)
-  - Controlled external link behavior
-  
-- **Progressive Disclosure**:
-  - Primary actions: 🎨 Explore Themes, 🔍 Search, 🗺️ Curated Paths
-  - Advanced filters hidden by default
-  - Details drawer (not modal) for editorial item presentation
-
-**Use Cases**:
-- Museum/gallery exhibitions and installations
-- Public library kiosks and browsing stations
-- Educational workshops and classroom demonstrations
-- Research presentations and conferences
-- Take-home collections via Digital Receipt export
+*For more screenshots and use cases, see the [Introduction & User Guide](INTRODUCTION.md).*
 
 ---
 
@@ -178,129 +125,108 @@ The Exhibit environment provides a parallel UI shell with a focus on public-faci
 
 ```
 ShelfSignals/
-├── docs/                           # GitHub Pages deployment
-│   ├── index.html                  # Production interface
-│   ├── preview/
-│   │   ├── index.html              # Preview interface
-│   │   └── exhibit/                # Exhibit/Studio interface
-│   │       ├── index.html          # Museum-ready UI shell
-│   │       └── curated-paths.json  # 8 curated thematic paths
-│   ├── js/                         # Shared JavaScript modules
-│   │   ├── signals.js              # Signal detection & registry
-│   │   ├── lc.js                   # LC call number parser
-│   │   ├── colors.js               # Color palette management
-│   │   ├── search.js               # Search state & matching
-│   │   ├── year.js                 # Year normalization
-│   │   └── receipt.js              # Digital Receipt system (RFC 8785 + SHA-256)
-│   └── data/                       # Collection data
-│       ├── sekula_inventory.json   # CSV-compatible format
-│       ├── sekula_index.json       # Primo API JSON format
-│       └── sekula_index.csv        # CSV export
-├── scripts/                        # Data collection & analysis tools
-│   ├── sekula_indexer.py           # Primo API harvester
-│   ├── facet_scout.py              # Facet analysis utility
-│   ├── photo_feature_extractor.py  # Photo likelihood feature extraction
-│   ├── photo_likelihood_scorer.py  # Grok API scoring pipeline
-│   ├── merge_scores_to_json.py     # Merge scores into JSON data
-│   ├── merge_scores_to_csv.py      # Export enriched CSV
-│   └── verify_photo_identifiers.py # Verify photo insert identifier system
-├── README.md                       # This file
-├── CODEX_INSTRUCTIONS.md           # LLM assistant guidelines
-└── COPILOT_INSTRUCTIONS.md         # Copilot behavior guidelines
+├── docs/                    # Documentation + GitHub Pages deployment
+│   ├── index.md             # Documentation index
+│   ├── pipeline.md          # Data pipeline guide
+│   ├── interfaces.md        # Interface documentation
+│   ├── receipts.md          # Digital Receipt system
+│   ├── operations.md        # Running locally, scheduling
+│   ├── PHOTO_LIKELIHOOD_FACET.md  # Deep facets guide
+│   ├── index.html           # Production interface (deprecated)
+│   ├── preview/             # Preview interface (v2.x)
+│   │   ├── index.html
+│   │   └── exhibit/         # Exhibit interface
+│   ├── js/                  # Shared JavaScript modules
+│   └── data/                # Collection data (JSON, CSV)
+├── scripts/                 # Data pipeline tools
+│   ├── sekula_indexer.py    # Primo API harvester
+│   ├── photo_feature_extractor.py  # AI feature extraction
+│   ├── photo_likelihood_scorer.py  # Grok API scoring
+│   └── merge_scores_to_json.py     # Merge enriched data
+├── README.md                # This file
+└── INTRODUCTION.md          # Visual user guide
 ```
 
 ---
 
-## Thematic Alignment
+## Core Principles
 
-ShelfSignals is purpose-built to reveal the **implicit structure** embedded within library collections. Rather than treating catalogs as flat databases, it recognizes that:
+1. **Source-Agnostic**: Works with any metadata source (API, CSV, HTML scraping)
+2. **Collection-Neutral**: Adaptable to any library, archive, or museum catalog
+3. **Reproducible Pipelines**: Version-controlled scripts with frozen parameters
+4. **Visual Intelligence**: Transform metadata into spatial, chromatic representations
+5. **Research-Oriented**: Designed for discovery and insight, not end-user search
 
-- **Numbering systems encode organization**: Call numbers, accession numbers, and shelf locations reflect historical decisions about classification and proximity.
-- **Subjects reveal themes**: Subject headings and notes contain rich semantic signals about content, provenance, and research focus.
-- **Patterns emerge at scale**: Clustering, sequence analysis, and visual representation make latent structures visible.
-
-The Allan Sekula Library serves as the prototype collection because its thematic focus—photography, labor, maritime culture, critical theory—creates distinct signals that can be detected, visualized, and analyzed. This approach is **collection-neutral** and can be adapted to any catalog with structured metadata.
-
-### Core Principles
-
-1. **System-agnostic ingestion**: Works with any metadata source (APIs, CSV, HTML scraping)
-2. **Normalization layer**: Standardizes heterogeneous field formats and vocabularies
-3. **Configurable analysis**: Modular pattern detection adaptable to different collections
-4. **Visual intelligence**: Transforms metadata into spatial, chromatic, and interactive representations
-5. **Research-oriented**: Designed for discovery and insight, not end-user search
+See [**docs/index.md**](docs/index.md#key-principles) for detailed principles.
 
 ---
 
-## Version History & Roadmap
+## External Dependencies
 
-### Current Versions
+### Required (Harvesting)
+- Python 3.8+
+- `requests` library (`pip install requests`)
+- Institution-specific API access (may require VPN or authentication)
 
-- **Production (v1.x)**: Stable interface with proven workflows and CSV-based data loading
-- **Preview (v2.x)**: Experimental modular architecture with enhanced accessibility and JSON-native data
-- **Exhibit (v2.x)**: Museum-ready parallel UI with curated paths, kiosk mode, and Digital Receipt system
+### Optional (AI Enrichment)
+- xAI (Grok) API key for deep facet scoring
+- Free tier: ~100 requests/hour
+- Safe default: Mock mode (`--mock` flag) for testing
 
-### Migration Path
+### Web Interfaces
+- **No dependencies**: Pure HTML/CSS/JavaScript
+- Runs on any modern browser (Chrome 90+, Firefox 88+, Safari 14+)
+- GitHub Pages hosting (free for public repositories)
 
-Features proven in the preview environment will be selectively promoted to production. The modular JavaScript utilities (`signals.js`, `lc.js`, `colors.js`, `search.js`, `year.js`, `receipt.js`) represent reusable components that can be integrated into future analysis tools beyond the web interface.
-
-The Exhibit environment demonstrates how ShelfSignals can be adapted for public-facing exhibitions and installations while maintaining the same data foundation and analytical capabilities.
-
----
-
-## Deep Facets
-
-ShelfSignals includes **Deep Facets**: AI-powered probabilistic content detection that reveals latent patterns in collections beyond traditional cataloging.
-
-### Embedded Photography Likelihood
-
-A probabilistic facet that estimates the likelihood (0–100) that books contain actual photographic inserts or plates, even when not categorized as photography books.
-
-**Key Features**:
-- **Conservative scoring**: High scores (>70) require converging signals from multiple metadata fields
-- **Token-efficient**: Compact feature packets extracted from metadata
-- **Stable & deterministic**: Consistent scores across runs for the same prompt version
-- **Automated pipeline**: GitHub Actions workflow for collection-wide scoring
-- **Visual integration**: Toggleable overlay with color-coded likelihood tints
-
-**Documentation**: See [docs/PHOTO_LIKELIHOOD_FACET.md](docs/PHOTO_LIKELIHOOD_FACET.md) for full implementation details.
-
-**Try it**:
-- [Production interface](https://evcatalyst.github.io/ShelfSignals/) - Toggle "📷 Embedded Photography" in header controls
-- [Preview interface](https://evcatalyst.github.io/ShelfSignals/preview/) - Same feature with enhanced accessibility
+See [**docs/pipeline.md**](docs/pipeline.md#external-api-dependencies) for API details.
 
 ---
 
-## Documentation
+## Use Cases
 
-### Getting Started
-- **[Introduction & User Guide](INTRODUCTION.md)** - Complete visual walkthrough with screenshots, use cases, and workflow examples
-- **[README.md](README.md)** - Technical documentation (this file)
-- **[Deep Facets Guide](docs/PHOTO_LIKELIHOOD_FACET.md)** - AI-powered content detection implementation
+ShelfSignals serves multiple personas and research workflows:
 
-### Interface-Specific Guides
-- **Production Interface** (`/`) - Stable, proven workflows ([Launch →](https://evcatalyst.github.io/ShelfSignals/))
-- **Preview Interface** (`/preview/`) - Enhanced features and accessibility ([Launch →](https://evcatalyst.github.io/ShelfSignals/preview/))
-- **Exhibit Interface** (`/preview/exhibit/`) - Museum-ready installation ([Launch →](https://evcatalyst.github.io/ShelfSignals/preview/exhibit/))
-  - Add `?kiosk=1` for fullscreen kiosk mode
+### 📚 Researchers
+- **Pattern discovery**: Find thematic clusters across traditional subject boundaries
+- **Collection analysis**: Understand topic distribution and relationships
+- **Reproducible workflows**: Document methodology with Digital Receipts
 
-### Developer Documentation
-- **Repository structure** - See above
-- **Data pipeline** - Scripts in `/scripts` directory
-- **Modular utilities** - JavaScript modules in `/docs/js`
+### 🏛️ Librarians & Curators
+- **Collection visualization**: See shelf organization from a bird's-eye view
+- **Gap analysis**: Identify underrepresented subject areas
+- **Exhibition planning**: Build curated pathways through collections
+
+### 👥 Museum Visitors
+- **Guided exploration**: Follow curated paths through themed content
+- **Take-home collections**: Export selections via Digital Receipts (QR codes, JSON)
+- **Self-guided learning**: Kiosk mode for unattended installations
+
+See [**docs/index.md - Use Case Map**](docs/index.md#use-case-map) for detailed workflows.
+
+---
+
+## About the Sekula Library
+
+The inaugural ShelfSignals deployment visualizes the **Allan Sekula Library Collection**—a research library focused on photography, labor history, maritime culture, and critical theory. The collection's thematic coherence makes it an ideal test case for pattern detection, but ShelfSignals is **collection-neutral** and adaptable to any catalog with structured metadata.
+
+See [**INTRODUCTION.md**](INTRODUCTION.md#about-the-sekula-library) for more context.
 
 ---
 
 ## Contributing
 
 ShelfSignals is an open research project. We welcome:
-- **Feature requests** - Open an issue on GitHub
-- **Bug reports** - Include browser version and reproduction steps
-- **Data contributions** - Adapt to new collections with metadata connectors
-- **Code improvements** - Pull requests for modular utilities
+- **Feature requests**: Open an issue on GitHub
+- **Bug reports**: Include browser version and reproduction steps
+- **Data contributions**: Adapt to new collections with metadata connectors
+- **Code improvements**: Pull requests for modular utilities or pipeline scripts
+
+See [**docs/operations.md - Adapting to New Collections**](docs/operations.md#adapting-to-new-collections) for integration guidance.
 
 ---
 
 ## License
 
 ShelfSignals is an open-source research project. See repository for license details.
+
 
