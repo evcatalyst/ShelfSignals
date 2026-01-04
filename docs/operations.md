@@ -465,13 +465,12 @@ python scripts\verify_photo_identifiers.py
 │       └── photo_scoring.yml       # GitHub Actions workflow
 ├── README.md                       # Repository overview
 ├── INTRODUCTION.md                 # Visual user guide
-└── docs/                           # Documentation (this directory)
-    ├── index.md                    # Documentation index
-    ├── pipeline.md                 # Data pipeline guide
-    ├── interfaces.md               # Interface documentation
-    ├── receipts.md                 # Digital Receipt system
-    ├── operations.md               # This file
-    └── PHOTO_LIKELIHOOD_FACET.md   # Deep facets documentation
+├── index.md                        # Documentation index
+├── pipeline.md                     # Data pipeline guide
+├── interfaces.md                   # Interface documentation
+├── receipts.md                     # Digital Receipt system
+├── operations.md                   # This file
+└── PHOTO_LIKELIHOOD_FACET.md       # Deep facets documentation
 ```
 
 ### Data Files
